@@ -1,0 +1,42 @@
+<DOCTYPE html>
+<html>
+<head>
+  <title>Ben's Site</title>
+  <meta charset="utf-8">
+
+  <style>
+    body {
+      background-color: black;
+    }
+    header, .main {
+      background-color: darkgray;
+      width: 50%;
+    }
+  </style>
+
+  <script>
+    function doTheButton() {
+      let countstring = document.getElementById("countbutton").innerHTML;
+      let count = parseInt(countstring);
+      count++;
+      document.getElementById("countbutton").innerHTML = count.toString();
+    }
+  </script>
+
+</head>
+
+<body>
+
+  <header>
+  <h2>You are on my website!</h2>
+  </header>
+
+  <div class="main">
+    <p>This is the landing page for my github profile.</p>
+    <p>I literally just made this, so there isn't anything to see at this point. I really hope I keep this thing updated.</p>
+    <p>Until I get things in a better state, here's a recursive link: <a href="BenjaminfW.github.io">Link!</a></p>
+    <button id="countbutton" onclick="doTheButton()">0</button>
+  </div>
+  
+</body>
+</html>
