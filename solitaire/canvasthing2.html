@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Spider Solitaire</title>
+
+<style>
+#canvas {
+	border: 2px double darkgreen;
+	background-color: green;
+	border-radius: 5px;
+}
+</style>
+
+<script>
+
+class Card {
+	constructor(face, suit, faceUp) {
+		this.face = face;
+		this.suit = suit;
+		this.faceUp = faceUp;
+	}
+	flip() {
+		this.faceUp = !this.faceUp;
+	}
+	print() {
+		var suitprint = "";
+		if (this.suit == "s")
+			suitprint = "spades";
+		else if (this.suit == "c")
+			suitprint = "clubs";
+		else if (this.suit == "d")
+			suitprint = "diamonds";
+		else if (this.suit == "h")
+			suitprint = "hearts";
+		else
+			suitprint = "no suit";
+		return this.face.toString() + " of " + suitprint;
+	}
+}
+
+function drawSpade(x,y) {
+	var canvas = document.getElementById("canvas");
+	
+	if (canvas.getContext) {
+		var draw2d = canvas.getContext("2d");
+		
+		// Two circles
+		draw2d.beginPath();
+		draw2d.arc(x-5,y, 8, 0,2*Math.PI, true);
+		draw2d.moveTo(x+5,y)
+		draw2d.arc(x+5,y, 8, 0,2*Math.PI, true);
+		
+		draw2d.fill();
+		
+		// Top part
+		draw2d.beginPath();
+		draw2d.moveTo(x-13,y)
+		draw2d.bezierCurveTo(x-13,y-6, x-5,y-18, x,y-20);
+		draw2d.bezierCurveTo(x+5,y-18, x+13,y-6, x+13,y);
+		
+		draw2d.fill();
+		
+		// Bottom part
+		draw2d.beginPath();
+		draw2d.moveTo(x-8,y+15);
+		draw2d.bezierCurveTo(x,y+15, x-2,y+12, x,y);
+		draw2d.bezierCurveTo(x+2,y+12, x,y+15, x+8,y+15);
+		
+		draw2d.fill();
+	}
+}
+
+function drawHeart(x,y) {
+	var canvas = document.getElementById("canvas");
+	
+	if (canvas.getContext) {
+		var draw2d = canvas.getContext("2d");
+		
+		draw2d.fillStyle = "red";
+		
+		// Two circles
+		draw2d.beginPath();
+		draw2d.arc(x-6,y-6, 8, 0,2*Math.PI, true);
+		draw2d.moveTo(x+5,y)
+		draw2d.arc(x+6,y-6, 8, 0,2*Math.PI, true);
+		
+		draw2d.fill();
+		
+		// Top part
+		draw2d.beginPath();
+		draw2d.moveTo(x-14,y-6);
+		draw2d.bezierCurveTo(x-15,y+5, x-2,y+8, x,y+15);
+		draw2d.bezierCurveTo(x+2,y+8, x+15,y+5, x+14,y-6);
+		
+		draw2d.fill();
+	}
+}
+
+function drawCard(x, y, card, selected) {
+	var canvas = document.getElementById("canvas");
+	
+	if (canvas.getContext) {
+		var draw2d = canvas.getContext("2d");
+		
+		draw2d.fillStyle = "lightgray";
+		draw2d.fillRect(x-1,y-1, 52,82);
+		
+		draw2d.fillStyle = "white";
+		draw2d.fillRect(x,y, 50,80);
+		
+		if (card.faceUp) {
+			
+			var text2draw = "no face value";
+			if (card.face == 0)
+				text2draw = "A";
+			else if (card.face == 10)
+				text2draw = "J";
+			else if (card.face == 11)
+				text2draw = "Q";
+			else if (card.face == 12)
+				text2draw = "K";
+			else
+				text2draw = (card.face+1).toString();
+			
+			if (card.suit == "h" || card.suit == "d")
+				draw2d.fillStyle = "red";
+			else
+				draw2d.fillStyle = "black";
+			
+			draw2d.fillText(text2draw, x+8,y+10);
+			
+			if (card.suit == "s")
+				drawSpade(x+25,y+40);
+			else if (card.suit == "h")
+				drawHeart(x+25,y+40);
+			else {
+				draw2d.fillStyle = "magenta";
+				draw2d.fillRect(x+15,y+30, 20,20);
+				draw2d.fillStyle = "black";
+				draw2d.fillRect(x+15,y+30, 10,10);
+				draw2d.fillRect(x+25,y+40, 10,10);
+			}
+		}
+		else {
+			draw2d.fillStyle = "skyblue";
+			draw2d.fillRect(x+5,y+5, 40,70);
+		}
+	}
+}
+
+function renderGame(table, deck, winrow, selectedx,selectedy) {
+	var draw2d = document.getElementById("canvas").getContext("2d");
+	
+	draw2d.fillStyle = "green";
+	draw2d.fillRect(40,40, 800, 500);
+	
+	console.log("drawing with selected as " + selectedx.toString() + "," + selectedy.toString());
+	
+	if (winrow.length == 8) {
+		draw2d.fillText("You Win", 400, 250);
+	}
+	
+	for (var i = 0; i < 10; i++) {
+		for (var j = 0; j < table[i].length; j++) {
+			drawCard(50+(60*i),50+(15*j), table[i][j], false);
+		}
+	}
+	
+	if (deck.length > 0) {
+		draw2d.fillStyle = "white";
+		draw2d.fillRect(50+(60*11),400, 50,80);
+		draw2d.fillStyle = "skyblue";
+		draw2d.fillRect(50+(60*11)+5,405, 40,70);
+		var numdraws = deck.length / 10;
+		draw2d.fillStyle = "blue";
+		draw2d.fillText(numdraws.toString(), 50+(60*11)+22,440);
+	}
+	
+	// Deal deck
+	draw2d.fillRect(725,695, 50,80);
+	draw2d.fillStyle = "skyblue";
+	draw2d.fillRect(730,700, 40,70);
+	
+	if (selectedx > -1 && selectedy > -1) {
+		if (selectedy < table[selectedx].length) {
+			draw2d.fillStyle = "lightblue";
+			
+			var borderpos = [46 + (selectedx*60), 46 + (selectedy*15)];
+			var borderheight = 74 + ((table[selectedx].length - selectedy) * 15);
+			draw2d.fillRect(borderpos[0],borderpos[1], 58,borderheight);
+			
+			for (i = selectedy; i < table[selectedx].length; i++) {
+				drawCard(50+(60*selectedx),50+(15*i), table[selectedx][i], true);
+			}
+		}
+	}
+	
+	for (i = 0; i < winrow.length; i++) {
+		drawCard(60+(75*i),400, winrow[i], false);
+	}
+	
+	
+}
+
+function winState() {
+	var draw2d = document.getElementById("canvas").getContext("2d");
+	
+	draw2d.fillText("You Win!", 300,300);
+}
+
+function playGame(table, deck) {
+	
+	var gameTable = table;
+	var gameDeck = deck;
+	
+	var winDeck = [];
+	
+	var canvas = document.getElementById("canvas");
+	var draw2d = canvas.getContext("2d");
+	
+	var selected = [-1,-1];
+	
+	//var aniframe;
+	//var animate = false;
+	
+	canvas.addEventListener("click", (e) => {
+		console.log("click");
+		//var selectedcard;
+		
+		var clickpos = [e.clientX-9,e.clientY-30];
+		
+		draw2d.beginPath();
+		draw2d.arc(clickpos[0],clickpos[1], 3, 0,2*Math.PI, true);
+		draw2d.fill();
+		
+		var rowselected = Math.floor((clickpos[0] - 50) / 60);
+		var colselected = Math.floor((clickpos[1] - 50) / 15);
+		console.log("input selection: " + rowselected.toString() + "," + colselected.toString());
+		
+		// Check to see if the deal pile has been selected
+		if (rowselected == 11) {
+			if (colselected > 22 && colselected < 29) {
+				console.log("Dealt");
+				if (gameDeck.length > 0) {
+					for (var i = 0; i < 10; i++) {
+						gameTable[i].push(gameDeck[gameDeck.length-1]);
+						gameDeck.pop();
+					}
+				}
+			}
+		}
+		
+		// Check to see if the clicked position is on a card
+		if (rowselected > 9) {
+			console.log("Clicked out of row range");
+			//draw2d.fillStyle = "black";
+			//draw2d.fillText("Clicked out of row range", 5,15);
+			
+			rowselected = -1;
+			colselected = -1;
+		}
+		if (rowselected > -1 && colselected >= gameTable[rowselected].length && gameTable[rowselected].length > 0) {
+			var rowlength = gameTable[rowselected].length;
+			if (colselected >= rowlength && colselected < rowlength + 4) {
+				colselected = rowlength - 1;
+			}
+			else {
+				console.log("Clicked out of column range");
+				//draw2d.fillStyle = "black";
+				//draw2d.fillText("Clicked out of column range", 5,15);
+			
+				rowselected = -1;
+				colselected = -1;
+			}
+		}
+		
+		// Check to see if a free space has been selected
+		if (rowselected > -1) {
+			if (gameTable[rowselected].length == 0 && (colselected >= 0 && colselected <= 4)) {
+				colselected = 0;
+			}
+		}
+		
+		// Check to see if the clicked card has a run under it
+		if ((rowselected > -1 && colselected > 0) && colselected < gameTable[rowselected].length-1) {
+			//console.log("Searching for a run");
+			
+			var rowlength = gameTable[rowselected].length;
+			var i = colselected;
+			while (i < rowlength - 1 && gameTable[rowselected][i].face == gameTable[rowselected][i+1].face + 1 && gameTable[rowselected][i].suit == gameTable[rowselected][i+1].suit) {
+				//console.log(gameTable[rowselected][i].print + " == " + gameTable[rowselected][i+1].print() + " + 1");
+				i++;
+			}
+			if (gameTable[rowselected][rowlength-1].face + 1 == gameTable[rowselected][rowlength-2].face && gameTable[rowselected][rowlength-1].suit == gameTable[rowselected][rowlength-2].suit) {
+				//console.log(gameTable[rowselected][rowlength-2].print() + " == " + gameTable[rowselected][rowlength-1].print() + " - 1");
+				i++;
+			}
+			//console.log("run of length " + (i-colselected).toString());
+
+			if (i - colselected < rowlength - colselected) {
+				console.log("Clicked card with non-consecutive children");
+				//draw2d.fillStyle = "black";
+				//draw2d.fillText("Clicked card with non-consecutive children", 5,15);
+				
+				rowselected = -1;
+				colselected = -1;
+			}
+			else {
+				console.log("run with length " + (i-colselected).toString() + " found");
+			}
+		}
+		
+		// Check to see if the card is face-up
+		if (rowselected > -1 && colselected > 0) {
+			console.log("Test to see if " + rowselected.toString() + "," + colselected.toString() + " is face-up");
+			if (!gameTable[rowselected][colselected].faceUp) {
+				rowselected = -1;
+				colselected = -1;
+			}
+		}
+		
+		//draw2d.fillStyle = "green";
+		//draw2d.fillRect(0,0, 800,500);
+		
+		var is_valid_card = rowselected > -1 && colselected > -1;
+		var is_new_card = rowselected != selected[0] || colselected != selected[1];
+		var is_prev_in_table = gameTable[selected[0]] != undefined && gameTable[selected[0]][selected[1]] != undefined; // A typo in this line caused a bug that was almost impossible to find.
+		var is_adjacent = rowselected == selected[0] && colselected == selected[1] - 1;
+		//var prev_has_no_children = gameTable[rowselected][colselected + 1] == undefined;
+		
+		/*if (is_valid_card && gameTable[rowselected].length > 0)
+			console.log("selected " + rowselected.toString() + "," + colselected.toString() + ": " + gameTable[rowselected][colselected].toString());*/
+		
+		if (is_valid_card) {
+			if (is_new_card) {
+				if (is_prev_in_table) {
+					if (!is_adjacent && gameTable[rowselected][colselected + 1] == undefined) {
+						// Move the cards onto the selected row
+						if (gameTable[rowselected].length == 0) {
+							for (var i = selected[1]; i < gameTable[selected[0]].length; i++) {
+								gameTable[rowselected].push(gameTable[selected[0]][i]);
+							}
+							for (i = 0; i < gameTable[rowselected].length; i++) {
+								gameTable[selected[0]].pop();
+							}
+							console.log("moved " + selected[0].toString() + "," + selected[1].toString() + " to free space " + rowselected.toString() + "," + colselected.toString());
+						}
+						else if (gameTable[rowselected][colselected].face - 1 == gameTable[selected[0]][selected[1]].face) {
+							for (var i = selected[1]; i < gameTable[selected[0]].length; i++) {
+								gameTable[rowselected].push(gameTable[selected[0]][i]);
+							}
+							for (i = gameTable[rowselected].length; i > colselected + 1; i--) {
+								gameTable[selected[0]].pop();
+							}
+							console.log("moved " + selected[0].toString() + "," + selected[1].toString() + " onto " + rowselected.toString() + "," + colselected.toString());
+						}
+						else {
+							var moveto = gameTable[rowselected][colselected].print();
+							var movefrom = gameTable[selected[0]][selected[1]].print();
+							console.log(movefrom + " does not go on " + moveto);
+						}
+						
+						// Check to see if a run is completed
+						if (gameTable[rowselected].length > 10) {
+							if (gameTable[rowselected][gameTable[rowselected].length-1].face == 0) {
+								//console.log("looking for a full run");
+								var rowlength = gameTable[rowselected].length;
+								var i = 1;
+								while (i < 13 && gameTable[rowselected][rowlength-i].face + 1 == gameTable[rowselected][rowlength-i-1].face) {
+									if (gameTable[rowselected].length > 1)
+										i++;
+								}
+								//console.log("got to " + i.toString());
+								if (i == 13) {
+									var winCard = new Card(12, gameTable[rowselected][gameTable[rowselected].length-1].suit, true);
+									winDeck.push(winCard);
+									for (var j = 0; j < 13; j++)
+										gameTable[rowselected].pop();
+									console.log("row completed")
+									
+									if (winDeck.length == 8) {
+										winState()
+									}
+								}
+							}
+						}
+					}
+					else {
+						console.log("crash avoided");
+					}
+				}
+				else {
+					if (gameTable[selected[0]] == undefined)
+						console.log("invalid \"move from\" row");
+					if (gameTable[selected[1]] == undefined)
+						console.log("invalid \"move from\" column");
+				}
+			}
+			else {
+				console.log("Deselected " + selected[0].toString() + "," + selected[1].toString());
+				rowselected = -1;
+				colselected = -1;
+			}
+		}
+		else {
+			console.log("No card selected");
+			rowselected = -1;
+			colselected = -1;
+			
+		}
+		
+		// Automatically flip exposed cards
+		if (selected[0] > -1 && gameTable[selected[0]].length > 0) {
+			var rowend = gameTable[selected[0]].length-1;
+			if (!gameTable[selected[0]][rowend].faceUp)
+				gameTable[selected[0]][rowend].faceUp = !gameTable[selected[0]][rowend].faceUp;
+		}
+		
+		console.log("move made");
+		
+		selected[0] = rowselected;
+		selected[1] = colselected;
+		
+		//draw2d.fillStyle = "black";
+		//draw2d.fillText("new previous selection: " + selected[0].toString() + selected[1].toString(), 5,30);
+		console.log("new previous selection: " + selected[0].toString() + "," + selected[1].toString());
+		
+		renderGame(gameTable, gameDeck, winDeck, selected[0], selected[1]);
+	});
+	
+}
+
+function spider(numsuits) {
+	
+	//var numsuits = 2;
+	
+	var table = [[],[],[],[],[],[],[],[],[],[]];
+	
+	var deckunshuffled = [];
+	
+	if (numsuits == 1) {
+		for (var i = 0; i < 8*13; i++) {
+			var faceval = i % 13;
+			var newCard = new Card(faceval, "s", true);
+			deckunshuffled.push(newCard);
+		}
+	}
+	else if (numsuits == 2) {
+		for (var i = 0; i < 4*13; i++) {
+			var faceval = i % 13;
+			var newCard = new Card(faceval, "s", true);
+			deckunshuffled.push(newCard);
+		}
+		for (i = 0; i < 4*13; i++) {
+			var faceval = i % 13;
+			var newCard = new Card(faceval, "h", true);
+			deckunshuffled.push(newCard);
+		}
+	}
+	
+	var deck = [];
+	
+	// Shuffle the deck
+	for (i = 0; i < 8*13; i++) {
+		var randcard = Math.floor(Math.random() * deckunshuffled.length);
+		
+		deck.push(deckunshuffled[randcard]);
+		
+		for (var j = randcard; j < deckunshuffled.length-1; j++)
+			deckunshuffled[j] = deckunshuffled[j+1];
+		deckunshuffled.pop();
+	}
+	
+	// Deal the deck
+	for (i = 0; i < 44; i++) {
+		deck[deck.length-1].flip();
+		table[i%10].push(deck[deck.length-1]);
+		deck.pop();
+	}
+	for (i = 44; i < 54; i++) {
+		table[i%10].push(deck[deck.length-1]);
+		deck.pop();
+	}
+	
+	// Start the game
+	renderGame(table, false, [], -1,-1);
+	playGame(table, deck);
+}
+</script>
+
+</head>
+<body>
+<div id="buttondiv">
+<button onclick="spider(1)">One Suit</button>
+<button onclick="spider(2)">Two Suit</button>
+<!--button id="start" onclick="spider()">Click Me</button-->
+</div>
+<canvas id="canvas" width="800px" height="500px"></canvas>
+<h3>To-do</h3>
+<ul>
+	<li>Fix selection bug coming from line ___ (hard)</li>
+	<li>Add undo button (medium)</li>
+	<li>Make 2-suit and 4-suit variants (easy-medium)</li>
+	<li>Add animation and drag-and-drop functionality (medium)</li>
+	<li>Remove "Click Me" button (hard for some reason)</li>
+	<li>Abstract the cards' click detection (hard)<ul><li>Make the rows collapse when there are too many cards</li></ul></li>
+	<li>Add win state (play again option) (medium-hard)</li>
+	<li>Add winning animation (medium)</li>
+	<li>Update the cards' look (easy)</li>
+	<li>Look into how to make it more winnable (medium-hard)</li>
+</ul>
+</body>
+</html>
