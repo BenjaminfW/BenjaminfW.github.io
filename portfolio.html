@@ -4,20 +4,37 @@
         <title>Ben's Portfolio</title>
         <meta charset="utf-8">
 
+        <link href="bensite.css" rel="stylesheet">
+
+        <script>
+            function toggleList(ind) {
+                var elem2toggle = "list" + ind;
+                //console.log(document.getElementById(elem2toggle).style.display)
+                if (document.getElementById(elem2toggle).style.display === "block")
+                    document.getElementById(elem2toggle).style.display = "none";
+                else if (document.getElementById(elem2toggle).style.display === "none")
+                    document.getElementById(elem2toggle).style.display = "block";
+            }
+            function hideLists() {
+                for (let i = 0; i < 6; i++)
+                    document.getElementById("list" + i).style.display = "none";
+            }
+        </script>
+
     </head>
 
-    <body>
+    <body onload="hideLists()">
 
         <nav>
             <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="resume.html">Resume</a></li>
-                <li>Portfolio</li>
+                <li class="navlist"><a href="index.html">Home</a></li>
+                <li class="navlist"><a href="resume.html">Resume</a></li>
+                <li class="navlist">Portfolio</li>
             </ul>
         </nav>
 
         <header>
-        <h2>Here's some of the stuff I've made</h2>
+            <h1>Here's some of the stuff I've made</h1>
         </header>
 
         <div class="main">
@@ -33,6 +50,9 @@
             <div class="submain">
                 <h4>Pictures</h4>
                 <p>I own a camera, and here are some choice pictures I've taken.</p>
+                <video width="100%" autoplay muted loop="true">
+                    <source src="images/Night Sky.mp4" type="video/mp4">
+                </video>
                 <img width="100%" src="images/DSCN1243.JPG">
                 <img width="100%" src="images/DSCN7944.JPG">
                 <img width="100%" src="images/IMG_7715.JPG">
@@ -49,6 +69,46 @@
                     <li><a href="canvas_projects/minesweeper_plus/minesweeper_plus.html">Better Minesweeper</a></li>
                     <li><a href="canvas_projects/canvasthing4.html">FreeCell</a></li>
                     <li><a href="canvas_projects/flap_the_bird.html">Flap the Bird</a></li>
+                </ul>
+                <p>For context, I made the solitaires in notepad when I had some quiet time on campus. Everything else was made at home.
+                    I made the first version of Mineweeper in 24 hours. The second version modified the code a bit.
+                </p>
+                <p><strong>None of these work 100%.</strong></p>
+                <p>Here's a list of game-breaking issues each one has:</p>
+                <ul>
+                    <li><button onclick="toggleList(0)">Spider Solitaire</button></li>
+                    <ul id="list0">
+                        <li>Pressing "One-Suit" or "Two-Suit" does not delete the previous instance of the game.</li>
+                        <li>Sometimes the game straight up crashes</li>
+                        <li>It's possible to place cards on rows they don't go on</li>
+                    </ul>
+                    <li><button onclick="toggleList(1)">Klondike Solitaire</button></li>
+                    <ul id="list1">
+                        <li>Pressing "New Game" does not delete the previous instance of the game.</li>
+                        <li>Putting too many cards on one row makes the bottom card inaccessible</li>
+                    </ul>
+                    <li><button onclick="toggleList(2)">Minesweeper</button></li>
+                    <ul id="list2">
+                        <li>Pressing "New Game" does not delete the previous instance of the game.</li>
+                        <li>Ironically, this one is the most stable.
+                            The only major issue with this one is that it doesn't clear out numberless spaces correctly.
+                        </li>
+                    </ul>
+                    <li><button onclick="toggleList(3)">Minesweeper Plus</button></li>
+                    <ul id="list3">
+                        <li>Pressing "New Game" does not delete the previous instance of the game.</li>
+                        <li>The game cannot detect whether you've won</li>
+                    </ul>
+                    <li><button onclick="toggleList(4)">FreeCell</button></li>
+                    <ul id="list4">
+                        <li>Pressing "New Game" does not delete the previous instance of the game.</li>
+                        <li>Clicking on a card to put it on the win deck deletes that card</li>
+                        <li>The "undo" button only works most of the time</li>
+                    </ul>
+                    <li><button onclick="toggleList(5)">Flap the Bird</button></li>
+                    <ul id="list5">
+                        <li>It runs super slowly.</li>
+                    </ul>
                 </ul>
             </div>
         </div>

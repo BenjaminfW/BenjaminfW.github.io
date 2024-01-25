@@ -1,0 +1,63 @@
+/*
+I mean... yeah, the colors work. But it makes the website look like it's from 2005.
+#3038B0
+#B06830
+#79B030
+*/
+
+body {
+    background-color: black;
+    color: #B06830;
+}
+
+/*header, .main {
+    margin: auto;
+}*/
+
+nav, header, .main {
+    background-color: #3038B0;
+    width: 75%;
+    border-left: 4px solid #262d8f;
+    border-right: 4px solid #262d8f;
+    margin: auto;
+    /*margin-top: none;
+    margin-bottom: none;*/
+    padding: 1%
+}
+
+nav {
+    font-size: 20pt;
+    border-bottom: 4px solid #262d8f;
+    text-decoration: none;
+}
+.navlist {
+    display: inline;
+    width: 33%;
+    margin: auto;
+    border-right: #262d8f;
+}
+
+/*header {
+    width: max-content;
+}*/
+
+/*.main {
+    background-color: #3038B0;
+    border-left: 4px solid #262d8f;
+    border-right: 4px solid #262d8f;
+    border-radius: 5px;
+    width: 75%;
+}*/
+
+.submain {
+    width: 49%;
+    padding: 5px;
+    /*float: left;*/
+}
+
+a {
+    color: #79B030;
+}
+a:hover {
+    color: #9adf3f;
+}
