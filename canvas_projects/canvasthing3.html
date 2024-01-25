@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<title>Solitaire</title>
+
+<style>
+#canvas {
+	border: 2px solid darkgreen;
+	background-color: green;
+	border-radius: 5px;
+}
+</style>
+
+<script>
+class Card {
+	constructor(face, suit, faceUp) {
+		this.face = face;
+		this.suit = suit;
+		this.faceUp = faceUp;
+		this.width = 60;
+	}
+	flip() {
+		this.faceUp = !this.faceUp;
+	}
+	color() {
+		if (this.suit == "s" || this.suit == "c")
+			return "black";
+		else if (this.suit == "h" || this.suit == "d")
+			return "red";
+		else
+			return "none";
+	}
+	print() {
+		var suitprint = "";
+		if (this.suit == "s")
+			suitprint = "spades";
+		else if (this.suit == "c")
+			suitprint = "clubs";
+		else if (this.suit == "d")
+			suitprint = "diamonds";
+		else if (this.suit == "h")
+			suitprint = "hearts";
+		else
+			suitprint = "no suit";
+		
+		let faceprint
+		if (this.face == 0)
+			faceprint = "A";
+		else if (this.face == 10)
+			faceprint = "J";
+		else if (this.face == 11)
+			faceprint = "Q";
+		else if (this.face == 12)
+			faceprint = "K";
+		else
+			faceprint = this.face + 1;
+		
+		return faceprint + " of " + suitprint;
+	}
+}
+
+function drawSpade(x,y) {
+	var canvas = document.getElementById("canvas");
+	
+	if (canvas.getContext) {
+		var draw2d = canvas.getContext("2d");
+		
+		// Two circles
+		draw2d.beginPath();
+		draw2d.arc(x-5,y, 8, 0,2*Math.PI, true);
+		draw2d.moveTo(x+5,y)
+		draw2d.arc(x+5,y, 8, 0,2*Math.PI, true);
+		
+		draw2d.fill();
+		
+		// Top part
+		draw2d.beginPath();
+		draw2d.moveTo(x-13,y)
+		draw2d.bezierCurveTo(x-13,y-6, x-5,y-18, x,y-20);
+		draw2d.bezierCurveTo(x+5,y-18, x+13,y-6, x+13,y);
+		
+		draw2d.fill();
+		
+		// Bottom part
+		draw2d.beginPath();
+		draw2d.moveTo(x-8,y+15);
+		draw2d.bezierCurveTo(x,y+15, x-2,y+12, x,y);
+		draw2d.bezierCurveTo(x+2,y+12, x,y+15, x+8,y+15);
+		
+		draw2d.fill();
+	}
+}
+
+function drawClub(x,y) {
+	var canvas = document.getElementById("canvas");
+	
+	if (canvas.getContext) {
+		var draw2d = canvas.getContext("2d");
+		
+		// Circles
+		draw2d.beginPath();
+		draw2d.arc(x-8,y, 8, 0,2*Math.PI, true);
+		draw2d.moveTo(x+8,y);
+		draw2d.arc(x+8,y, 8, 0,2*Math.PI, true);
+		draw2d.moveTo(x,y-13);
+		draw2d.arc(x,y-10, 8, 0,2*Math.PI, true);
+		
+		draw2d.fill();
+		
+		draw2d.arc(x,y, 2, 0,2*Math.PI, true);
+		draw2d.fill()
+		
+		// Bottom part
+		draw2d.beginPath();
+		draw2d.moveTo(x-8,y+15);
+		draw2d.bezierCurveTo(x,y+15, x-2,y+12, x,y);
+		draw2d.bezierCurveTo(x+2,y+12, x,y+15, x+8,y+15);
+		
+		draw2d.fill();
+	}
+}
+
+function drawDiamond(x,y) {
+	var canvas = document.getElementById("canvas");
+	
+	if (canvas.getContext) {
+		var draw2d = canvas.getContext("2d");
+		
+		draw2d.fillStyle = "red";
+		
+		draw2d.beginPath();
+		draw2d.lineTo(x-13,y);
+		draw2d.lineTo(x,y-15);
+		draw2d.lineTo(x+13,y);
+		draw2d.lineTo(x,y+15);
+		
+		draw2d.fill();
+	}
+}
+
+function drawHeart(x,y) {
+	var canvas = document.getElementById("canvas");
+	
+	if (canvas.getContext) {
+		var draw2d = canvas.getContext("2d");
+		
+		draw2d.fillStyle = "red";
+		
+		// Two circles
+		draw2d.beginPath();
+		draw2d.arc(x-6,y-6, 8, 0,2*Math.PI, true);
+		draw2d.moveTo(x+5,y)
+		draw2d.arc(x+6,y-6, 8, 0,2*Math.PI, true);
+		
+		draw2d.fill();
+		
+		// Top part
+		draw2d.beginPath();
+		draw2d.moveTo(x-14,y-6);
+		draw2d.bezierCurveTo(x-15,y+5, x-2,y+8, x,y+15);
+		draw2d.bezierCurveTo(x+2,y+8, x+15,y+5, x+14,y-6);
+		
+		draw2d.fill();
+	}
+}
+
+function drawCard(x, y, card) {
+	var canvas = document.getElementById("canvas");
+	if (canvas.getContext) {
+		var draw2d = canvas.getContext("2d");
+		
+		var cardWidth = card.width;
+		var cardHeight = Math.round(cardWidth * 8 / 5);
+		
+		draw2d.fillStyle = "lightgray";
+		draw2d.fillRect(x-2,y-2, cardWidth+4,cardHeight+4);
+		draw2d.fillStyle = "white";
+		draw2d.fillRect(x,y, cardWidth,cardHeight);
+		
+		if (card.faceUp) {
+			
+			if (card.color() == "red")
+				draw2d.fillStyle = "red";
+			else
+				draw2d.fillStyle = "black";
+			
+			let text2draw;
+			if (card.face == 0)
+				text2draw = "A";
+			else if (card.face == 10)
+				text2draw = "J";
+			else if (card.face == 11)
+				text2draw = "Q";
+			else if (card.face == 12)
+				text2draw = "K";
+			else
+				text2draw = card.face + 1;
+			draw2d.font = "15px sans-serif";
+			draw2d.fillText(text2draw, x+(cardWidth/10),y+10+(cardWidth/10));
+			//draw2d.fillText(card.suit, x+(cardWidth/10),y+10+Math.round((cardHeight/6)));
+			if (card.suit == "s")
+				drawSpade(x+(cardWidth/2),y+(cardHeight/2));
+			else if (card.suit == "c")
+				drawClub(x+(cardWidth/2),y+(cardHeight/2));
+			else if (card.suit == "h")
+				drawHeart(x+(cardWidth/2),y+(cardHeight/2));
+			else if (card.suit == "d")
+				drawDiamond(x+(cardWidth/2),y+(cardHeight/2));
+			else
+				draw2d.fillText(card.suit, x+(cardWidth/10),y+10+Math.round(cardHeight/6));
+		}
+		else {
+			draw2d.fillStyle = "skyblue";
+			
+			draw2d.fillRect(x+(cardWidth/10),y+(cardWidth/10), cardWidth-(2*cardWidth/10),cardHeight-(2*cardWidth/10));
+		}
+		
+	}
+}
+
+/*
+function startingAnimation(deck) {
+	
+	var canvas = document.getElementById("canvas");
+	if (canvas.getContext) {
+		var draw2d = canvas.getContext("2d");
+		
+		const dx = 0.05;
+		var rowposition = [];
+		for (let i = 0; i < 7; i++)
+			rowposition.push((i*70) + 30);
+			
+		var todeal = [];
+		for (let i = 1; i < 29; i++)
+			todeal.push(deck[deck.length-i]);
+		
+		var AnimatedCard = {
+			card = todeal[0];
+			start = [40,40];
+			end = [rowposition[0],130];
+			progress = 0;
+		}
+		
+		var currentcards = [AnimatedCard];
+		
+		for (let i = 0; i < currentcards.length; i++)
+			currentcards[i].progress += dx;
+		
+		if (currentcards[currentcards.length-1].progress > 0.5 && todeal.length > 0) {
+			let newAnimatedCard = new AnimatedCard;
+			let xdestination = rowposition[currentcards.length % 7];
+			let ydestination = 130;
+			if (todeal)
+				ydestination
+			newAnimatedCard.end = [xdestination,ydestination];
+			newAnimatedCard.card = todeal[0];
+			currentcards.push(newAnimatedCard);
+			
+			todeal.shift();
+		
+	}
+	
+	for (let i = 0; i < currentcards.length; i++) {
+		
+	//	drawCard(
+	
+}
+*/
+
+function findMove(table, card, wins) {
+	if (card.face == 0) {
+		return card.suit;
+	}
+	else {
+		for (let i = 0; i < wins.length; i++) {
+			if (card.suit == wins[i].suit && card.face == wins[i].face + 1)
+				return wins[i].suit;
+		}
+	}
+	
+	for (let i = 0; i < table.length; i++) {
+		if (table[i].length == 0) {
+			if (card.face == 12)
+				return i;
+		}
+		else {
+			if (table[i][table[i].length-1].face == card.face + 1) {
+				if (table[i][table[i].length-1].color() != card.color()) {
+					return i;
+				}
+			}
+		}
+	}
+	
+	return -1;
+}
+
+function gameLoop(table, deck) {
+	var gameTable = table;
+	var gameDeck = deck;
+	
+	var winDecks = [];
+	var win = false;
+	
+	const numdrawn = 1;
+	//var miniDeck = [];
+	//var deckprogress = 0;
+	var drawnDeck = []; // I wanted to avoid using two stacks, but it all got too complicated.
+	
+	const margin = 50;		// margin from the left edge of the frame
+	const spacing = 35;		// the amount of space between each card
+	const width = deck[0].width;	// the width of each card
+	const offset = Math.round(spacing / 2);	// how far to the right each card is drawn
+	
+	function findRow(x) {return Math.floor((x - margin) / (width + spacing));}
+	function findDrawX(row) {return (row * (width + spacing)) + margin + offset;}
+	
+	const vmargin = 40;				// margin from the top edge of the frame
+	const height = Math.round(width*8/5)		// height of each card
+	const vmiddle = 30;				// margin between the top part and the main area
+	const areatop = vmargin + height + vmiddle;	// top position of the main area
+	
+	// Preliminary rendering
+	for (let i = 0; i < 7; i++) {
+		for (let j = 0; j < gameTable[i].length; j++)
+			drawCard(findDrawX(i),j*25+areatop, gameTable[i][j]);
+	}
+	//drawCard(margin+offset,vmargin, gameDeck[gameDeck.length-1]);
+	let decktop = gameDeck[gameDeck.length-numdrawn];
+	let hiddendecktop = new Card(decktop.face, decktop.suit, false);
+	drawCard(margin+offset,vmargin, hiddendecktop);
+	
+	console.log(gameDeck);
+	
+	onclick = (e) => {
+		if (win) {
+			document.getElementById("message").innerHTML = "You win!";
+		}
+		else {
+			
+			var clickInput = [e.offsetX,e.offsetY];
+			
+			var rowclicked = findRow(clickInput[0]);
+			
+			//console.log("Clicked on row " + rowclicked);
+			
+			//var moveTo;
+			
+			var cardclicked;
+			// cardclicked[0] represents whether the deck/win deck area is clicked or the area below
+			// cardclicked[1] represents which row of that area is clicked
+			// example: cardclicked == [1,2] would be the third stack of the bottom play area
+			
+			//-----------------------------------------
+			
+			// Determine what you clicked on
+			// Clicked in the area above
+			if (clickInput[1] > 40 && clickInput[1] < vmargin + height) {
+				if (rowclicked == 0) {
+					cardclicked = [-1,0];
+					console.log("clicked on the deck");
+				}
+				
+				for (let i = 1; i < 4; i++) {
+					if (drawnDeck.length == i) {
+						if (clickInput[0] > margin + width + spacing + 20*i && clickInput[0] < margin + 2*width + spacing + 20*i) {
+							cardclicked = [-1,1];
+							console.log("clicked on drawn card: " + drawnDeck[drawnDeck.length - 1].print());
+						}
+					}
+				}
+				if (drawnDeck.length > 3) {
+					if (clickInput[0] > margin + width + spacing + 40 && clickInput[0] < margin + 2*width + spacing + 40) {
+						cardclicked = [-1,1];
+						console.log("clicked on drawn card: " + drawnDeck[drawnDeck.length - 1].print());
+					}
+				}
+				
+				for (let i = 0; i < 4; i++) {
+					if (rowclicked == 3 + i) {
+						cardclicked = [-1,2+i];
+						console.log("clicked on win deck " + i);
+					}
+				}
+				
+				if (clickInput[1] > margin+width && clickInput[1] < margin+width+spacing)
+					console.log("This is the area between the deck and the drawn deck");
+				if (clickInput[1] > margin+2*width+spacing+40 && clickInput[1] < margin+3*(width+spacing))
+					console.log("This is the area between the drawn deck and the win decks");
+				
+			}
+			// clicked in the area below
+			else if (clickInput[1] > vmargin + height + vmiddle) {
+				if (rowclicked >= 0 && rowclicked <= 6) {
+					if (gameTable[rowclicked].length == 0) {
+						if (clickInput[1] < vmargin + 2*height + vmiddle) {
+							cardclicked = [rowclicked,-1];
+							console.log("clicked a free space");
+						}
+					}
+					else if (gameTable[rowclicked].length < 10) {
+						let colclicked = Math.round((clickInput[1] - areatop) / 25);
+						let topcard = areatop + (25*(gameTable[rowclicked].length-1));
+						
+						if (colclicked < gameTable[rowclicked].length - 1) {
+							cardclicked = [rowclicked,colclicked];
+							console.log("clicked on " + rowclicked + "," + colclicked);
+						}
+						else if (clickInput[1] > topcard && clickInput[1] < topcard + height) {
+							cardclicked = [rowclicked,gameTable[rowclicked].length-1];
+							console.log("clicked on " + rowclicked + "," + (gameTable[rowclicked].length-1));
+						}
+					}
+					else {
+						//areatop + (col * (25 * 10 / (gameTable[row].length)))
+						let colclicked = Math.round((clickInput[1] - areatop) / (25 * 10 / (gameTable[rowclicked].length)));
+						let topcard = areatop + (25*gameTable[rowclicked].length);
+						//let colclicked = Math.round((clickInput[1] - areatop) / (25 + gameTable[rowclicked].length));
+						//let topcard = areatop + (25 + gameTable[rowclicked].length)*gameTable[rowclicked].length;
+						
+						if (colclicked < gameTable[rowclicked].length - 1) {
+							cardclicked = [rowclicked,colclicked];
+							console.log("clicked on " + rowclicked + "," + colclicked);
+						}
+						else if (clickInput[1] > topcard && clickInput[1] < topcard + height) {
+							cardclicked = [rowclicked,gameTable[rowclicked].length-1];
+							console.log("clicked on " + rowclicked + "," + gameTable[rowclicked].length-1);
+						}
+					}
+				}
+			}
+			else {
+				console.log("clicked on vertical margin");
+			}
+			
+			//------------------------------------------------------------------------
+			//cardclicked
+			// [0] == -1 --> [-1,0] Clicked on deck
+			//           --> [-1,1] Clicked on drawn deck
+			//           --> [-1,x] (x = 2,3,4,5) Clicked on win deck
+			// [0] == x (x = 0-6) --> Clicked on play area
+			//                    --> [x,y] Clicked on the yth card in the xth pile
+			
+			// Actions based on input
+			if (cardclicked == undefined) {
+				console.log("No card selected");
+			}
+			else if (cardclicked[0] == -1) {
+				if (cardclicked[1] == 0) {
+					// Draw
+					//console.log(drawnDeck);
+					
+					if (gameDeck.length > numdrawn) {
+						//deckprogress += numdrawn;
+						//console.log("Putting " + gameDeck[gameDeck.length - 1].print() + " on the drawn pile");
+						for (let i = 0; i < numdrawn; i++) {
+							drawnDeck.push(gameDeck.pop());
+							//gameDeck.pop();
+							console.log(drawnDeck[drawnDeck.length-1].print() + " is on the drawn pile");
+						}
+						
+						for (let i = 0; i < drawnDeck.length && i < 3; i++) {
+							drawCard(margin+offset + width + spacing + (20*i),vmargin, drawnDeck[drawnDeck.length - Math.min(3,drawnDeck.length) + i]);
+							// This one line of code has been such a major pain.
+						}
+						
+						console.log("Next card to draw: " + gameDeck[gameDeck.length - numdrawn].print());
+						
+						//drawCard(margin+offset,vmargin, gameDeck[gameDeck.length - numdrawn]);
+						let decktop = gameDeck[gameDeck.length-numdrawn];
+						let hiddendecktop = new Card(decktop.face, decktop.suit, false);
+						drawCard(margin+offset,vmargin, hiddendecktop);
+					}
+					else if (gameDeck.length == 0) {
+						// When deck has been cycled through compeletely
+						//console.log(gameDeck);
+						//console.log(drawnDeck);
+						//deckprogress = 0;
+						let decksize = drawnDeck.length;
+						for (let i = 0; i < decksize; i++) {
+							gameDeck.push(drawnDeck.pop());
+							//drawnDeck.pop();
+						}
+						//console.log(gameDeck);
+						console.log("Reset deck");
+						console.log("Next card to draw: " + gameDeck[gameDeck.length - numdrawn]);
+						
+						let draw2d = document.getElementById("canvas").getContext("2d");
+						draw2d.fillStyle = "green";
+						draw2d.fillRect(margin+width+spacing,vmargin/2, width*2,height+45);
+						
+						//drawCard(margin+offset,vmargin, gameDeck[gameDeck.length-1]);
+						let decktop = gameDeck[gameDeck.length-numdrawn];
+						let hiddendecktop = new Card(decktop.face, decktop.suit, false);
+						drawCard(margin+offset,vmargin, hiddendecktop);
+					}
+					else {
+						// When there are fewer cards in the deck than the draw number
+						//console.log(gameDeck);
+						//console.log(drawnDeck);
+						//deckprogress = gameDeck.length;
+						//console.log("Drew " + (gameDeck.length - deckprogress) + " cards\ndeckprogress: " + gameDeck.length);
+						let decksize = gameDeck.length;
+						for (let i = 0; i < decksize; i++) {
+							drawnDeck.push(gameDeck.pop());
+							//gameDeck.pop();
+						}
+						//console.log(gameDeck);
+						
+						// Draw the cards you just added
+						
+						let draw2d = document.getElementById("canvas").getContext("2d");
+						draw2d.fillStyle = "green";
+						draw2d.fillRect(margin+offset-5,vmargin-5, width+10,height+10);
+						
+						for (let i = 0; i < drawnDeck.length && i < 3; i++) {
+							drawCard(margin+offset + width + spacing + (20*i),vmargin, drawnDeck[drawnDeck.length - Math.min(3,drawnDeck.length) + i]);
+						}
+					}
+					
+					// Animate cards flipping off the deck
+					
+					
+				}
+				else if (cardclicked[1] == 1) {
+					// Move card from revealed deck
+					let moveTo = findMove(gameTable, drawnDeck[drawnDeck.length - 1], winDecks);
+					if (moveTo == -1) {
+						console.log("no move");
+					}
+					else if (moveTo == "h" || moveTo == "d" || moveTo == "s" || moveTo == "c") {
+						console.log("moving drawn card to " + moveTo + " pile");
+						
+						//deckprogress--;
+						
+						let appendedDeck = -1;
+						for (let i = 0; i < winDecks.length; i++) {
+							if (winDecks[i].suit == moveTo) {
+								winDecks[i] = {face: drawnDeck[drawnDeck.length - 1].face, suit: moveTo};
+								appendedDeck = i;
+							}
+						}
+						if (appendedDeck == -1) {
+							// if the suit isn't found in the list, add the new suit
+							let newCard = {face: drawnDeck[drawnDeck.length - 1].face, suit: moveTo};
+							winDecks.push(newCard);
+							appendedDeck = winDecks.length - 1;
+						}
+						//let i = 0;
+						//while (winDecks[i].suit != moveTo && i < winDecks.length)
+						//	i++;
+						//winDecks[i] = {face: drawnDeck[drawnDeck.length - 1].face, suit: moveTo};
+						//for (let i = deckprogress; i < deck.length; i++)
+						//	gameDeck[i] = gameDeck[i+1];
+						drawnDeck.pop();
+						
+						let tempCard = new Card(winDecks[appendedDeck].face, winDecks[appendedDeck].suit, true);
+						drawCard(findDrawX(appendedDeck+3),40, tempCard);
+						
+						// Animate card going to pile
+						
+						var draw2d = document.getElementById("canvas").getContext("2d");
+						
+						draw2d.fillStyle = "green";
+						draw2d.fillRect(margin+width+offset+10, vmargin-5, width*3, height+15);
+						
+						for (let i = 0; i < 3 && i < drawnDeck.length; i++) {
+							drawCard(68 + width + spacing + (20*i),40, drawnDeck[drawnDeck.length - Math.min(3,drawnDeck.length) + i]);
+						}
+						
+						// Win State
+						let wintest = 0;
+						for (let i = 0; i < winDecks.length; i++) {
+							if (winDecks[i].face == 12) {
+								wintest++;
+							}
+						}
+						if (wintest == 4) {
+							win = true;
+							console.log("win");
+						}
+						
+					}
+					else {
+						if (gameTable[rowclicked].length < 10)
+							drawCard(findDrawX(moveTo), areatop + 25*gameTable[moveTo].length, drawnDeck[drawnDeck.length-1]);
+						
+						console.log("moving drawn card to row " + moveTo);
+						//deckprogress--;
+						//console.log("deckprogress: " + deckprogress);
+						
+						// Redraw drawn cards
+						
+						gameTable[moveTo].push(drawnDeck[drawnDeck.length - 1]);
+						//for (let i = deckprogress; i < deck.length; i++)
+						//	gameDeck[i] = gameDeck[i+1];
+						drawnDeck.pop();
+						
+						// Animate card going to pile
+						
+						var draw2d = document.getElementById("canvas").getContext("2d");
+						
+						draw2d.fillStyle = "green";
+						draw2d.fillRect(margin+width+offset+10, vmargin-5, 3*width, height+15);
+						
+						//console.log(drawnDeck);
+						for (let i = 0; i < 3 && i < drawnDeck.length; i++) {
+							drawCard(68 + width + spacing + (20*i),40, drawnDeck[drawnDeck.length - Math.min(3,drawnDeck.length) + i]);
+						}
+					}
+				}
+				else {
+					// Move card from win decks
+					if (rowclicked > 2 && rowclicked < 7) {
+						var winrow = rowclicked - 3;
+						var movecard = new Card(winDecks[winrow].face, winDecks[winrow].suit, true);
+						var moveTo = findMove(gameTable, movecard, winDecks);
+						
+						if (moveTo == -1) {
+							console.log("no move");
+						}
+						else if (moveTo == "h" || moveTo == "d" || moveTo == "s" || moveTo == "c") {
+							console.log("This is a weird one...\nHow can it move onto itself?");
+						}
+						else {
+							gameTable[moveTo].push(movecard);
+							winDecks[winrow].face--
+							
+							// Redraw
+							
+							let tempcard = new Card(winDecks[winrow].face, winDecks[winrow].suit, true);
+							drawCard(findDrawX(rowclicked),vmargin, tempcard);
+							
+							if (gameTable[moveTo].length < 10) {
+								//for (let i = 0; i < gameTable[moveTo].length; i++)
+								drawCard(findDrawX(moveTo),areatop+(gameTable[moveTo].length*24), movecard);
+							}
+							else {
+								for (let i = 0; i < gameTable[moveTo].length; i++)
+									drawCard(findDrawX(moveTo),areatop + (i * (25 * 10 / (gameTable[moveTo].length))), gameTable[moveTo][i]);
+							}
+						}
+					}
+					else {
+						console.log("Did not click on a win deck");
+					}
+					
+				}
+			}
+			else if (cardclicked[0] > -1 && gameTable[rowclicked][cardclicked[1]].faceUp) {
+				// Move card from area
+				let moveTo = findMove(gameTable, gameTable[rowclicked][cardclicked[1]], winDecks);
+				
+			if (moveTo == -1) {
+					console.log("no move");
+				}
+				else if (moveTo == "h" || moveTo == "d" || moveTo == "s" || moveTo == "c") {
+					console.log(cardclicked[1]);
+					if (cardclicked[1] == gameTable[rowclicked].length - 1) {
+						console.log("moving " + rowclicked + "," + cardclicked[1] + " to " + moveTo + " pile");
+						
+						let appendedDeck = -1;
+						for (let i = 0; i < winDecks.length; i++) {
+							if (winDecks[i].suit == moveTo) {
+								winDecks[i] = {face: gameTable[rowclicked][cardclicked[1]].face, suit: moveTo};
+								appendedDeck = i;
+							}
+						}
+						if (appendedDeck == -1) {
+							// if the suit isn't found in the list, add the new suit
+							let newCard = {face: gameTable[rowclicked][cardclicked[1]].face, suit: moveTo};
+							winDecks.push(newCard);
+							appendedDeck = winDecks.length - 1;
+						}
+						//let i = 0;
+						//while (winDecks[i].suit != moveTo && i < winDecks.length)
+						//	i++;
+						//winDecks[i] = {face: gameTable[rowclicked][cardclicked[1]].face, suit: moveTo};
+						gameTable[rowclicked].pop();
+						
+						let tempCard = new Card(winDecks[appendedDeck].face, winDecks[appendedDeck].suit, true);
+						drawCard(findDrawX(appendedDeck + 3),40, tempCard);
+						
+						// Animate card going to pile
+						
+						if (gameTable[rowclicked].length > 0) {
+							if (!gameTable[rowclicked][gameTable[rowclicked].length-1].faceUp) {
+								gameTable[rowclicked][gameTable[rowclicked].length-1].flip();
+								let drawy;
+								if (gameTable[rowclicked].length < 10)
+									drawy = areatop + 25 * (gameTable[rowclicked].length - 1);
+								else
+									drawy = areatop + 250;
+								drawCard(findDrawX(rowclicked), drawy, gameTable[rowclicked][gameTable[rowclicked].length - 1]);
+							}
+						}
+						
+						var draw2d = document.getElementById("canvas").getContext("2d");
+						
+						var rectx = findDrawX(rowclicked) - offset;
+						draw2d.fillStyle = "green";
+						draw2d.fillRect(rectx, 150, width + spacing, 500);
+						
+						if (gameTable[rowclicked].length < 10) {
+							for (let i = 0; i < gameTable[rowclicked].length; i++)
+								drawCard(findDrawX(rowclicked),areatop+i*25, gameTable[rowclicked][i]);
+						}
+						else {
+							for (let i = 0; i < gameTable[rowclicked].length; i++)
+								drawCard(findDrawX(rowclicked),areatop + (i * (25 * 10 / (gameTable[rowclicked].length))), gameTable[moveTo][i]);
+							//console.log("It's not updating because I'm lazy. I need to make this code still.");
+						}
+						
+						// Win State
+						let wintest = 0;
+						for (let i = 0; i < winDecks.length; i++) {
+							if (winDecks[i].face == 12) {
+								wintest++;
+							}
+						}
+						if (wintest == 4) {
+							win = true;
+							console.log("win");
+						}
+					
+					}
+					else {
+						console.log("Card to put on " + moveTo + " pile is not on top");
+						
+						// This is a really awkward special case.  I think the best way to deal with it is simply to
+						//rewrite my code to be a lot more general.  The brute force method would be to copy the code
+						//from the case underneath here as well as part of the findMove algorithm.  For now, I'll just
+						//say the player has to deal with it.
+						
+					}
+				}
+				else {
+					console.log("moving " + rowclicked + "," + cardclicked[1] + " to row " + moveTo);
+					let num2delete = gameTable[rowclicked].length - cardclicked[1];
+					for (let i = cardclicked[1]; i < gameTable[rowclicked].length; i++)
+						gameTable[moveTo].push(gameTable[rowclicked][i]);
+					for (let i = 0; i < num2delete; i++)
+						gameTable[rowclicked].pop();
+					
+					// Animate these cards going to their destination
+					
+					if (gameTable[rowclicked].length > 0) {
+						if (!gameTable[rowclicked][gameTable[rowclicked].length-1].faceUp) {
+							gameTable[rowclicked][gameTable[rowclicked].length-1].flip();
+							let drawy;
+							if (gameTable[rowclicked].length < 10)
+								drawy = areatop + 25 * (gameTable[rowclicked].length - 1);
+							else
+								drawy = areatop + 250;
+							drawCard(findDrawX(rowclicked), drawy, gameTable[rowclicked][gameTable[rowclicked].length - 1]);
+						}
+					}
+					
+					var draw2d = document.getElementById("canvas").getContext("2d");
+					
+					var rectx1 = findDrawX(rowclicked) - offset;
+					var rectx2 = findDrawX(moveTo) - offset;
+					draw2d.fillStyle = "green";
+					draw2d.fillRect(rectx1,150, width + spacing, 500);
+					draw2d.fillRect(rectx2,150, width + spacing, 500);
+					
+					if (gameTable[rowclicked].length < 10) {
+						for (let i = 0; i < gameTable[rowclicked].length; i++)
+							drawCard(findDrawX(rowclicked),areatop+i*25, gameTable[rowclicked][i]);
+					}
+					else {
+						for (let i = 0; i < gameTable[rowclicked].length; i++)
+							drawCard(findDrawX(rowclicked),areatop + (i * (25 * 10 / (gameTable[moveTo].length))), gameTable[moveTo][i]);
+						//console.log("It's not updating because I'm lazy. I need to make this code still.\nThis error is from having too many cards on one row.");
+					}
+					
+					if (gameTable[moveTo].length < 10) {
+						for (let i = 0; i < gameTable[moveTo].length; i++)
+							drawCard(findDrawX(moveTo),areatop + i*25, gameTable[moveTo][i]);
+					}
+					else {
+						for (let i = 0; i < gameTable[moveTo].length; i++)
+							drawCard(findDrawX(moveTo),areatop + (i * (25 * 10 / (gameTable[moveTo].length))), gameTable[moveTo][i]);
+						//console.log("It's not updating because I'm lazy. I need to make this code still.");
+					}
+				}
+			}
+			else {
+				//console.log("card selection not recognized - you really messed something up if you're getting this error");
+				console.log("selected face-down card or made a very weird card selection error");
+			}
+			
+			//-------------------------------------------
+			
+			//	Below is the old code I used. The conditions and actions kept getting confusing and hard to read
+			// so I redid it. Hopefully the code above is more readable.
+			/*
+			// Determines what you clicked on
+			var colclicked = -1;
+			if (rowclicked > -1 && rowclicked < 7) {
+				if (gameTable[rowclicked].length < 10) {
+					let clicky = Math.round((clickInput[1] - 160) / 25);
+					
+					// Check if a card on top of a pile was clicked
+					if (clicky >= gameTable[rowclicked].length) {
+						if (clickInput[1] < gameTable[rowclicked].length * 25 + 160 + Math.round(width * 8 / 5))
+							colclicked = gameTable[rowclicked].length - 1;
+					}
+					// Check if the deck or something was clicked
+					else if (clicky < 0) {
+						if (deck.length > 0) {
+							if (clickInput[1] >= 40 && clickInput[1] <= 40 + Math.round(width * 8 / 5)) {
+								//console.log("I'll put code to draw new cards here");
+								console.log("Drew " + numdrawn + " cards");
+								deckprogress += numdrawn;
+								
+								// Animate cards flipping off the deck
+								
+								for (let i = 0; i < 3 && i < deckprogress; i++) {
+									drawCard(68 + width + spacing + (20*i),40, gameDeck[gameDeck.length-deckprogress-i]);
+								}
+							}
+							else if (deckprogress == 1) {
+								if (clickInput[0] > 68 + width + spacing && clickInput[0] < 68 + (2*width) + spacing) {
+									moveTo = findMove(gameTable, gameDeck[gameDeck.length - deckprogress], winDecks);
+									
+									if (moveTo != "h"
+							}
+						}
+					}
+					// Otherwise, a card in the middle was clicked
+					else {
+						colclicked = clicky;
+					}
+				}
+				else {
+					colclicked = (clickInput[1] / (25 + (gameTable[rowclicked].length - 10))) + 160;
+					console.log("The selection may not have been the one you saw. I may still need to draw this to reflect what it is here.");
+				}
+				console.log("Table selection: " + rowclicked + "," + colclicked);
+			}
+			
+			*/
+			
+			//---------------------------------
+		}
+	};
+}
+
+function klondike() {
+	document.getElementById("message").innerHTML = "";
+	
+	var table = [[], [], [], [], [], [], []];
+	
+	var deckunshuffled = [];
+	
+	// Create Cards
+	for (let i = 0; i < 52; i++) {
+		let faceval = i % 13;
+		let suit;
+		if (Math.floor(i / 13) == 0)
+			suit = "s";
+		else if (Math.floor(i / 13) == 1)
+			suit = "c";
+		else if (Math.floor(i / 13) == 2)
+			suit = "d";
+		else if (Math.floor(i / 13) == 3)
+			suit = "h";
+		let newCard = new Card(faceval, suit, true);
+		deckunshuffled.push(newCard);
+	}
+	
+	var deck = [];
+	
+	// Shuffle deck
+	for (let i = 0; i < 52; i++) {
+		let randcard = Math.floor(Math.random() * deckunshuffled.length);
+		
+		deck.push(deckunshuffled[randcard]);
+		
+		for (let j = randcard; j < deckunshuffled.length - 1; j++)
+			deckunshuffled[j] = deckunshuffled[j+1];
+		
+		deckunshuffled.pop();
+	}
+	
+	delete(deckunshuffled);
+	
+	
+	//window.requestAnimaionFram(startingAnimation(deck));
+	
+	// Deal deck
+	for (let i = 0; i < 7; i++) {
+		for (let j = i; j < 7; j++) {
+			deck[deck.length-1].flip();
+			table[j].push(deck[deck.length-1]);
+			deck.pop();
+		}
+	}
+	for (let i = 0; i < 7; i++) {
+		table[i][table[i].length-1].flip();
+	}
+	
+	gameLoop(table, deck);
+	
+}
+
+</script>
+</head>
+
+<body>
+
+	<nav>
+		<ul>
+			<li><a href="../index.html">Back</a></li>
+			<li><a href="../portfolio.html">Portfolio</a></li>
+			<li><a href="canvasthing2.html">Spider</a></li>
+			<li>Klondike</li>
+			<li><a href="canvasthing4.html">FreeCell</a></li>
+		</ul>
+	</nav>
+
+<div id="controls">
+	<button onclick="klondike()">New Game</button>
+	<p id="message"></p>
+</div>
+
+<canvas id="canvas" height="500px" width="800px">Solitaire</button>
+
+</body>
+</html>

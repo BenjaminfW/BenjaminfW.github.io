@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Flappy Bird</title>
+
+<style>
+body {
+	background-color: skyblue;
+}
+#score, #hi_score {
+	width: 40%;
+	margin: auto;
+	padding: 3px;
+	/*display: inline;*/
+	/*border: 2px dashed black;*/
+}
+#startbutton {
+	width: 50%;
+	background-color: forestgreen;
+	color: deepskyblue;
+	margin-left: 25%;
+	border-right: 3px solid blue;
+	border-bottom: 3px solid blue;
+	border-left: 3px solid royalblue;
+	border-top: 3px solid royalblue;
+	padding: 10px;
+	font-size: 40pt;
+	border-radius: 0px;
+	
+}
+#startbutton:hover {
+	background-color: seagreen;
+	color: skyblue;
+	border-right: 3px solid royalblue;
+	border-bottom: 3px solid royalblue;
+	border-left: 3px solid lightblue;
+	border-top: 3px solid lightblue;
+}
+#startbutton:active {
+	background-color: darkgreen;
+	color: navy;
+	border-right: 3px solid mediumblue;
+	border-bottom: 3px solid mediumblue;
+	border-left: 3px solid blue;
+	border-top: 3px solid blue;
+}
+#ui {
+	width: 800px;
+	margin: auto;
+	/*border: 2px dotted black;*/
+}
+#canvasdiv {
+	width: 50%;
+	margin: auto;
+}
+#canvas {
+	background-color: green;
+	/*margin: auto;*/
+	border: 2px solid blue;
+	border-radius: 5px;
+}
+</style>
+
+<script>
+function toggleToDo() {
+	const todo = document.getElementById("todo");
+	if (todo.style.display == "none") {
+		todo.style.display = "block";
+		document.getElementById("hidebutton").innerHTML = "Hide To-do";
+	}
+	else {
+		todo.style.display = "none";
+		document.getElementById("hidebutton").innerHTML = "Show To-do";
+	}
+}
+
+
+
+
+
+
+var Bird = {
+	x: 200,
+	y: 250,
+	dy: 0,
+	grav: 0.5,
+	theta: 0,
+	dtheta: 0,
+	angle: 0
+};
+
+function Pipe() {
+	this.width = 100;
+	this.height = 50;
+	this.x = 850;
+	this.y = Math.round(Math.random() * 280) + 110;
+	this.space = Math.floor(Math.random() * 10) + 100;
+	this.timer = 0;
+}
+
+var pipes = [];
+
+var score = 0;
+var hiscore = 0;
+
+var lose = false;
+var intersect = false;
+
+var buildings = [];
+var groundcount = 0;
+var clouds = [];
+
+function drawBackground() {
+	var canvas = document.getElementById("canvas");
+	if (canvas.getContext) {
+		var draw2d = canvas.getContext("2d");
+		
+		var sky = draw2d.createLinearGradient(0,0,0,250);
+		sky.addColorStop(0,"deepskyblue");
+		sky.addColorStop(0.8,"skyblue");
+		sky.addColorStop(1,"lightblue");
+		
+		draw2d.fillStyle = sky;
+		draw2d.fillRect(0,0,800,250);
+		
+		var ground1 = draw2d.createLinearGradient(0,250,0,500);
+		ground1.addColorStop(0,"mediumseagreen");
+		ground1.addColorStop(0.3,"forestgreen");
+		ground1.addColorStop(1,"forestgreen");
+		
+		var ground2 = draw2d.createLinearGradient(0,250,0,500);
+		ground2.addColorStop(0,"mediumseagreen");
+		ground2.addColorStop(0.3,"darkgreen");
+		ground2.addColorStop(1,"darkgreen");
+		
+		draw2d.fillStyle = ground1;
+		draw2d.fillRect(0,250,800,250);
+		draw2d.fillStyle = ground2;
+		for (let i = 0; i < 800; i += 4) {
+			draw2d.beginPath();
+			draw2d.moveTo(i - groundcount,250);
+			draw2d.lineTo(i+1 - groundcount,250);
+			draw2d.lineTo(10 * (i + 2 - (groundcount) - 300), 500);
+			draw2d.lineTo(10 * (i - (groundcount) - 300), 500);
+			draw2d.fill();
+		}
+		
+		draw2d.fillStyle = "gray";
+		for (let i = 0; i < buildings.length - 1; i++) {
+			draw2d.fillRect(buildings[i][1], 250 - buildings[i][0], buildings[i+1][1] - buildings[i][1], buildings[i][0]);
+		}
+		
+		/*
+		for (let i = 0; i < clouds.length; i++) {
+			if (clouds[0] == 0) {
+				draw2d.fillStyle = "white";
+		}
+		*/
+	}
+}
+
+function drawPipes() {
+
+	//console.log("drawing pipes");
+	//const headwidth = 100;
+	//const headheight = 50;
+	//const border = 5
+	
+	var canvas = document.getElementById("canvas");
+	if (canvas.getContext) {
+		var draw2d = canvas.getContext("2d");
+		//console.log("drawing " + pipes.length + " pipes");
+		for (let i = 0; i < pipes.length; i++) {
+		
+			let leftedge = pipes[i].x - (pipes[i].width / 2);
+			let bottomtopedge = pipes[i].y + pipes[i].space;
+			let toptopedge = pipes[i].y - pipes[i].space - pipes[i].height;
+			
+			// Bottom pipe
+			draw2d.fillStyle = "black";
+			draw2d.fillRect(leftedge + 2, bottomtopedge + pipes[i].height - 1, pipes[i].width - 4, 500 - (pipes[i].y + pipes[i].space) + 2);
+			draw2d.fillRect(leftedge - 2, bottomtopedge - 2, pipes[i].width + 4, pipes[i].height + 4);
+			draw2d.fillStyle = "green";
+			draw2d.fillRect(leftedge + 4, bottomtopedge + pipes[i].height, pipes[i].width - 8, 500 - (pipes[i].y + pipes[i].space));
+			draw2d.fillRect(leftedge, bottomtopedge, pipes[i].width,pipes[i].height);
+			draw2d.fillStyle = "greenyellow";
+			draw2d.fillRect(leftedge + 10, bottomtopedge + 2, 8, pipes[i].height - 5);
+			draw2d.fillRect(leftedge + 21, bottomtopedge + 2, 3, pipes[i].height - 5);
+			draw2d.fillRect(leftedge + 18, bottomtopedge + pipes[i].height, 10, 500 - bottomtopedge);
+			draw2d.fillRect(leftedge + 33, bottomtopedge + pipes[i].height, 5, 500 - bottomtopedge);
+			draw2d.fillStyle = "green";
+			//draw2d.fillRect(leftedge + 4, pipes[i].y + pipes[i].space + pipes[i].height, 40, 2);
+			draw2d.beginPath();
+			draw2d.moveTo(leftedge + 4, bottomtopedge + pipes[i].height);
+			draw2d.lineTo(leftedge + 40, bottomtopedge + pipes[i].height);
+			draw2d.lineTo(leftedge + 4, bottomtopedge + pipes[i].height + 2);
+			draw2d.fill();
+			draw2d.fillStyle = "darkgreen";
+			draw2d.fillRect(leftedge + Math.round(pipes[i].width * 0.8), bottomtopedge + 2, Math.round(pipes[i].width * 0.2), pipes[i].height - 4);
+			draw2d.fillRect(leftedge + Math.round((pipes[i].width - 8) * 0.8), bottomtopedge + pipes[i].height, Math.round((pipes[i].width - 8) * 0.2), 500 - bottomtopedge);
+			
+			// Top pipe
+			draw2d.fillStyle = "black";
+			draw2d.fillRect(leftedge + 2, 0, pipes[i].width - 4, pipes[i].y - pipes[i].space);
+			draw2d.fillRect(leftedge - 2, toptopedge - 2, pipes[i].width + 4, pipes[i].height + 4);
+			draw2d.fillStyle = "green";
+			draw2d.fillRect(leftedge + 4, 0, pipes[i].width - 8, pipes[i].y - pipes[i].space);
+			draw2d.fillRect(leftedge, toptopedge, pipes[i].width,pipes[i].height);
+			draw2d.fillStyle = "greenyellow";
+			draw2d.fillRect(leftedge + 10, toptopedge + 2, 8, pipes[i].height - 5);
+			draw2d.fillRect(leftedge + 21, toptopedge + 2, 3, pipes[i].height - 5);
+			draw2d.fillRect(leftedge + 18, 0, 10, toptopedge);
+			draw2d.fillRect(leftedge + 33, 0, 5, toptopedge);
+			draw2d.fillStyle = "green";
+			draw2d.beginPath();
+			draw2d.moveTo(leftedge + 4, toptopedge - pipes[i].height);
+			draw2d.lineTo(leftedge + 40, toptopedge - pipes[i].height);
+			draw2d.lineTo(leftedge + 4, toptopedge - pipes[i].height - 2);
+			draw2d.fillStyle = "darkgreen";
+			draw2d.fillRect(leftedge + Math.round(pipes[i].width * 0.8), toptopedge + 2, Math.round(pipes[i].width * 0.2), pipes[i].height - 4);
+			draw2d.fillRect(leftedge + Math.round((pipes[i].width - 8) * 0.8), 0, Math.round((pipes[i].width - 8) * 0.2), toptopedge);
+			
+		}
+	}
+}
+
+function drawBird() {
+	var canvas = document.getElementById("canvas");
+	if (canvas.getContext) {
+		var draw2d = canvas.getContext("2d");
+		
+		draw2d.fillStyle = "black";
+		draw2d.beginPath();
+		draw2d.arc(Bird.x, Bird.y, 27, 0,2*Math.PI, true);
+		draw2d.fill();
+		draw2d.beginPath();
+		draw2d.moveTo(Bird.x + 40*Math.cos(Bird.angle), Bird.y + 40*Math.sin(Bird.angle));
+		draw2d.lineTo(Bird.x + 25*Math.cos(Bird.angle - 0.4), Bird.y + 25*Math.sin(Bird.angle - 0.4));
+		draw2d.lineTo(Bird.x + 25*Math.cos(Bird.angle + 0.4), Bird.y + 25*Math.sin(Bird.angle + 0.4));
+		draw2d.fill();
+		
+		draw2d.fillStyle = "yellow";
+		draw2d.beginPath();
+		draw2d.arc(Bird.x,Bird.y, 25, 0,2*Math.PI, true);
+		draw2d.fill();
+		
+		draw2d.fillStyle = "orange";
+		draw2d.beginPath();
+		draw2d.moveTo(Bird.x + 37*Math.cos(Bird.angle), Bird.y + 37*Math.sin(Bird.angle));
+		draw2d.lineTo(Bird.x + 22*Math.cos(Bird.angle - 0.38), Bird.y + 22*Math.sin(Bird.angle - 0.38));
+		draw2d.lineTo(Bird.x + 22*Math.cos(Bird.angle + 0.38), Bird.y + 22*Math.sin(Bird.angle + 0.38));
+		draw2d.fill();
+		
+		draw2d.fillStyle = "white";
+		draw2d.beginPath();
+		draw2d.arc(Bird.x + 6*Math.cos(Bird.angle - 0.65), Bird.y + 6*Math.sin(Bird.angle - 0.65), 10, 0,2*Math.PI, true);
+		draw2d.fill();
+		
+		draw2d.fillStyle = "royalblue";
+		draw2d.beginPath();
+		draw2d.arc(Bird.x + 8*Math.cos(Bird.angle - 0.60), Bird.y + 8*Math.sin(Bird.angle - 0.60), 4, 0,2*Math.PI, true);
+		draw2d.fill();
+	}
+}
+
+onclick = (e) => {
+	if (Bird.y > 0 && !intersect) {
+		Bird.dy = -10;
+		Bird.theta = 0;
+		Bird.dtheta = 0.4;
+	}
+}
+
+function calcColl(i) {
+	
+	
+	var points = [
+				[pipes[i].x - (pipes[i].width / 2), pipes[i].y + pipes[i].space],
+				[pipes[i].x + (pipes[i].width / 2), pipes[i].y + pipes[i].space],
+				[pipes[i].x - (pipes[i].width / 2), pipes[i].y - pipes[i].space],
+				[pipes[i].x + (pipes[i].width / 2), pipes[i].y - pipes[i].space]
+				];
+	
+	for (let j = 0; j < points.length; j++) {
+		/*var canvas = document.getElementById("canvas");
+		var draw2d = canvas.getContext("2d");
+		draw2d.fillStyle = "magenta";
+		draw2d.fillRect((points[j][0] - 3),(points[j][1] - 3), 6,6);
+		console.log((points[j][0] - 3) + "," + (points[j][1] - 3));*/
+		let dist = Math.sqrt( (points[j][0] - Bird.x) ** 2 + (points[j][1] - Bird.y) ** 2 );
+		if (dist < 25) {
+			intersect = true;
+			console.log("Hit corner");
+			loseAnimation();
+			return;
+		}
+	}
+	
+	// Vertical Projection
+	if (Bird.x < points[0][0]) {
+		// Left Point
+		if (points[0][0] - Bird.x < 25) {
+			if (Bird.y < points[2][1] || Bird.y > points[0][1]) {
+				intersect = true;
+				console.log("Hit left side");
+				loseAnimation();
+				return;
+			}
+		}
+		// Right Point
+		/*
+		if (Bird.x - points[1][0] < 25) {
+			intersect = true;
+			loseAnimation();
+			return;
+		}
+		*/
+	}/*
+	else if (Bird.x > points[1][0]) {
+		if (Bird.x - points[1][0] < 25) {
+			intersect = true;
+			console.log("Hit right side... somehow");
+			loseAnimation();
+			return;
+		}
+	}*/
+	else if (Bird.x > points[0][0] && Bird.x < points[1][0]) {
+		// Top Point
+		if (Bird.y - points[2][1] < 25) {
+			intersect = true;
+			console.log("Hit top point");
+			loseAnimation();
+			return;
+		}
+		// Bottom Point
+		if (points[0][1] - Bird.y < 25) {
+			intersect = true;
+			console.log("Hit bottom point");
+			loseAnimation();
+			return;
+		}
+	}
+	
+}
+
+function loseAnimation() {
+
+	Bird.y += Bird.dy;
+	Bird.dy += Bird.grav;
+	Bird.x += 2
+	
+	Bird.theta += Bird.dtheta;
+	Bird.angle = Math.atan(Bird.theta);
+	
+	if (Bird.y > 475) {
+		Bird.y = 475;
+		lose = true;
+	}
+	drawBackground();
+	drawPipes();
+	drawBird();
+	
+	if (!lose)
+		requestAnimationFrame(loseAnimation)
+	
+}
+
+function loop() {
+	
+	document.getElementById("canvas").getContext("2d").clearRect(0,0,800,500);
+	
+	for (let i = 0; i < pipes.length; i++) {
+		pipes[i].x -= 2;
+		
+		pipes[i].timer++;
+		if (pipes[i].timer == 150) {
+			var newpipe = new Pipe();
+			pipes.push(newpipe);
+			//console.log("pipe 1 position: " + pipes[0].x);
+		}
+		if (pipes[i].timer == 330) {
+			score++;
+			document.getElementById("score").innerHTML = "Score: " + score;
+			if (score > hiscore) {
+				hiscore = score;
+				document.getElementById("hi_score").innerHTML = "High Score: " + hiscore;
+			}
+		}
+		
+		
+		if (pipes[i].x > Bird.x - 100 && pipes[i].x < Bird.x + 100) {
+			calcColl(i);
+		}
+		
+	}
+	
+	if (pipes[0].x < -50) {
+		pipes.shift()
+	}
+	
+	Bird.y += Bird.dy;
+	
+	Bird.dy += Bird.grav;
+	if (Bird.y > 475) {
+		Bird.y = 475;
+		lose = true;
+	}
+	
+	Bird.theta += Bird.dtheta;
+	Bird.dtheta -= 0.03;
+	Bird.angle = Math.atan(Bird.theta);
+	//console.log(Bird.theta + "," + Bird.angle);
+	
+	for (let i = 0; i < buildings.length; i++) {
+		buildings[i][1] -= 0.17;
+		if (buildings[i][1] < -10) {
+			buildings.shift();
+			let newheight = Math.floor(Math.random() * 20) + 5;
+			let newwidth = Math.floor(Math.random() * 5) + 3;
+			let x = buildings[buildings.length-1][1];
+			buildings.push([newheight,x+newwidth]);
+		}
+	}
+	groundcount += 0.17;
+	if (groundcount > 4)
+		groundcount = groundcount % 4;
+	drawBackground();
+	
+	drawPipes();
+	//console.log(pipes[0].y + "," + pipes[0].space);
+	
+	drawBird();
+	
+	
+	
+	
+	if (!lose && !intersect)
+		requestAnimationFrame(loop);
+}
+
+function start() {
+	
+	Bird.x = 200;
+	Bird.y = 250;
+	Bird.dy = -10;
+	while (pipes.length > 0)
+		pipes.pop();
+	//console.log(pipes);
+	while (buildings.length > 0)
+		buildings.pop();
+	groundcount = 0;
+	
+	score = 0;
+	document.getElementById("score").innerHTML = "Score: " + score;
+	
+	let x = 0;
+	while (x < 850) {
+		let newheight = Math.floor(Math.random() * 20) + 5;
+		let newwidth = Math.floor(Math.random() * 5) + 3;
+		x += newwidth;
+		buildings.push([newheight,x]);
+	}
+	
+	lose = false;
+	intersect = false;
+	
+	var newpipe = new Pipe();
+	pipes.push(newpipe);
+	
+	//requestAnimationFrame(loop);
+	loop();
+}
+</script>
+
+</head>
+
+<body onload="toggleToDo()">
+
+	<nav>
+		<li><a href="../index.html">Home</a></li>
+		<li><a href="../portfolio.html">Portfolio</a></li>
+	</nav>
+
+<div id="ui">
+	<button id="startbutton" onclick="start()"><strong>New Game</strong></button>
+	<h2 id="score">Score:</h3>
+	<h2 id="hi_score">High Score:</h3>
+</div>
+
+<div id="canvasdiv">
+	<canvas id="canvas" width="800px" height="500px">Flap the Bird</canvas>
+</div>
+<button id="hidebutton" onclick="toggleToDo()">Show To-do</button>
+<div id="todo">
+	<h3>To do:</h3>
+	<ul>
+		<li>Add clouds</li>
+		<li>Add screen shake</li>
+		<li>Make bird look better</li>
+		<li>Improve bird turning</li>
+		<li>Add hit particles</li>
+		<li>Improve site look</li>
+		<li>Clean up code</li>
+		<li>Make game area dimensions adjustable</li>
+		<li>Add sounds</li>
+	</ul>
+	<h3>Things to add that aren't strictly necessary:</h3>
+	<ul>
+		<li>Add ground features</li>
+		<li>Color picker for everything</li>
+		<li>Different backgrounds</li>
+		<ul><li>Hills</li><li>Planetary Rings</li><li>Desert Canyon</li><li>No Background/Developer Art</li></ul>
+		<li>Difficulty slider</li>
+		<li>Gravity slider</li>
+		<li>Scale slider (make the pipes super tall and skinny and the bird small)</li>
+	</ul>
+</div>
+
+</body>
+</html>
