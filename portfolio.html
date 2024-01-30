@@ -26,41 +26,43 @@
     <body onload="hideLists()">
 
         <nav>
-            <ul>
-                <li class="navlist"><a href="index.html">Home</a></li>
-                <li class="navlist"><a href="resume.html">Resume</a></li>
-                <li class="navlist">Portfolio</li>
-            </ul>
+            <!--ul class="navlist">
+                <li class="navlistitem"><a href="index.html">Home</a></li>
+                <li class="navlistitem"><a href="resume.html">Resume</a></li>
+                <li class="navlistitem">Portfolio</li>
+            </ul-->
+            <div class="navlist">
+                <a class="navlistitem" href="index.html">Home</a>
+                <a class="navlistitem" href="resume.html">Resume</a>
+                <div class="navlistitem">Portfolio</div>
+                <div style="clear:both"></div>
+            </div>
         </nav>
 
         <header>
-            <h1>Here's some of the stuff I've made</h1>
+            <h1 class="headertext">Here's some of the stuff I've made</h1>
         </header>
 
-        <div class="main">
+        <div class="main" style="overflow:auto">
 
-            <div id="links">
-                <h4>Links</h4>
-                <ul>
-                    <li><a href="www.linkedin.com/in/john-west-0b0673256">Linkedin</a></li>
-                    <li><a href="https://www.flickr.com/photos/153704634@N07/">Flickr</a></li>
-                </ul>
-            </div>
-
-            <div class="submain">
-                <h4>Pictures</h4>
+            <div>
+                <h3 class="submainheader">Pictures</h4>
                 <p>I own a camera, and here are some choice pictures I've taken.</p>
-                <video width="100%" autoplay muted loop="true">
+                <video autoplay muted loop="true" id="portfoliovid">
                     <source src="images/Night Sky.mp4" type="video/mp4">
                 </video>
-                <img width="100%" src="images/DSCN1243.JPG">
-                <img width="100%" src="images/DSCN7944.JPG">
-                <img width="100%" src="images/IMG_7715.JPG">
-                <img width="100%" src="images/IMG_3584.JPG">
+                <div class="photocol">
+                    <img class="portfolioimg" width="100%" src="images/DSCN1243.JPG">
+                    <img class="portfolioimg" width="100%" src="images/DSCN7944.JPG">
+                </div>
+                <div class="photocol">
+                    <img class="portfolioimg" width="100%" src="images/IMG_7715.JPG">
+                    <img class="portfolioimg" width="100%" src="images/IMG_3584.JPG">
+                </div>
             </div>
 
             <div class="submain">
-                <h4>JavaScript</h4>
+                <h3 class="submainheader">JavaScript</h4>
                 <p>Since last fall, I've been learning HTML's canvas API. Here are my experiments in order:</p>
                 <ul>
                     <li><a href="canvas_projects/canvasthing2.html">Spider Solitaire</a></li>
@@ -73,7 +75,7 @@
                 <p>For context, I made the solitaires in notepad when I had some quiet time on campus. Everything else was made at home.
                     I made the first version of Mineweeper in 24 hours. The second version modified the code a bit.
                 </p>
-                <p><strong>None of these work 100%.</strong></p>
+                <p><strong>None of these work 100%!</strong></p>
                 <p>Here's a list of game-breaking issues each one has:</p>
                 <ul>
                     <li><button onclick="toggleList(0)">Spider Solitaire</button></li>
@@ -111,7 +113,16 @@
                     </ul>
                 </ul>
             </div>
-        </div>
 
+            <div class="submain">
+                <h3 class="submainheader">Links</h4>
+                <ul>
+                    <li><a href="www.linkedin.com/in/john-west-0b0673256">Linkedin</a></li>
+                    <li><a href="https://www.flickr.com/photos/153704634@N07/">Flickr</a></li>
+                </ul>
+            </div>
+
+        </div>
+        
     </body>
 </html>

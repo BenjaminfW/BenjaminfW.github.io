@@ -11,18 +11,28 @@
     <body>
 
         <nav>
-            <ul>
+            <!--ul>
                 <li class="navlist"><a href="index.html">Home</a></li>
                 <li class="navlist">Resume</li>
                 <li class="navlist"><a href="portfolio.html">Portfolio</a></li>
-            </ul>
+            </ul-->
+            <div class="navlist">
+                <a class="navlistitem" href="index.html">Home</a>
+                <div class="navlistitem">Resume</div>
+                <a class="navlistitem" href="portfolio.html">Portfolio</a>
+                <div style="clear:both"></div>
+            </div>
         </nav>
 
         <header>
-            <h1>Resume</h1>
+            <h1 class="headertext">Resume</h1>
         </header>
 
-        <div class="main">
+        <div class="main" style="overflow:auto">
+            <!-- Thank you, Stack Overflow! CSS is very frustrating
+            https://stackoverflow.com/questions/218760/how-do-you-keep-parents-of-floated-elements-from-collapsing
+            I'm not citing my sources so much as giving myself a resource
+            for when I run into this problem again-->
 
             <div>
                 <h3>What is Ben doing now?</h3>
@@ -32,7 +42,7 @@
             </div>
             
             <div class="submain">
-                <h3>Degree Info</h3>
+                <h3 class="submainheader">Degree Info</h3>
                 <table>
                     <tr>
                         <td>University</td>
@@ -47,7 +57,7 @@
                     </tr>
                     <tr>
                         <td>GPA</td>
-                        <td>3 &#177 0.1</td>
+                        <td>2.93</td>
                     </tr>
                     <tr>
                         <td>Estimated Graduation</td>
@@ -57,7 +67,7 @@
             </div>
 
             <div class="submain">
-                <h3>Here are a few classes I've taken recently.</h3>
+                <h3 class="submainheader">Here are a few classes I've taken recently.</h3>
                 <ul>
                     <li>Artificial Intelligence (currently enrolled)</li>
                     <li>Database Management Systems (currently enrolled)</li>
@@ -69,12 +79,12 @@
             </div>
 
             <div class="submain">
-                <h3>Employment</h3>
+                <h3 class="submainheader">Employment</h3>
                 <table>
-                    <tr>
-                        <td>Organization</td>
-                        <td>Position</td>
-                        <td>Years Active</td>
+                    <tr class="headerrow">
+                        <th>Organization</th>
+                        <th>Position</th>
+                        <th>Years Active</th>
                     </tr>
                     <tr>
                         <td>Behrend ITS</td>
@@ -90,7 +100,7 @@
             </div>
 
             <div class="submain">
-                <h3>Skills</h3>
+                <h3 class="submainheader">Skills</h3>
                 <h4>Languages</h4>
                 <ul>
                     <li>English</li>
@@ -119,7 +129,7 @@
                     <li>git (go figure)</li>
                     <li>Blender 3D</li>
                     <li>GIMP</li>
-                    <li></li>
+                    <!--li></li-->
                 </ul>
             </div>
 

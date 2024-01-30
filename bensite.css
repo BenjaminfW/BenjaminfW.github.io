@@ -7,7 +7,7 @@ I mean... yeah, the colors work. But it makes the website look like it's from 20
 
 body {
     background-color: black;
-    color: #B06830;
+    color: #bb865d;
 }
 
 /*header, .main {
@@ -27,18 +27,32 @@ nav, header, .main {
 
 nav {
     font-size: 20pt;
-    border-bottom: 4px solid #262d8f;
-    text-decoration: none;
+    border: 4px solid #262d8f;
+    /*text-decoration: none;*/
+    /*position:sticky;*/
+    padding: 0;
+    width: 75%;
 }
 .navlist {
-    display: inline;
-    width: 33%;
-    margin: auto;
+    height: 100%;
+}
+.navlistitem {
+    list-style: none;
+    /*display: inline;*/
+    float: left;
+    width: 33.33%;
+    /*margin: auto;*/
     border-right: #262d8f;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    text-align: center;
+}
+.navlistitem:hover {
+    background-color: #302975;
 }
 
 /*header {
-    width: max-content;
+    align-content: center;
 }*/
 
 /*.main {
@@ -52,12 +66,46 @@ nav {
 .submain {
     width: 49%;
     padding: 5px;
-    /*float: left;*/
+    float: left;
+}
+
+.photocol {
+    width: 49%;
+    float: left;
+    margin-right: 0.5%;
+    margin-left: 0.5%;
+}
+
+#links {
+    width: 20%;
+    float: right;
 }
 
 a {
     color: #79B030;
+    text-decoration: none;
 }
 a:hover {
     color: #9adf3f;
+    text-shadow: 0px 0px 10px #79B030;
+}
+
+.submainheader {
+    padding-left: 1%;
+    border-bottom: 2px solid #262d8f;
+}
+
+.headertext {
+    width: max-content;
+    margin: auto;
+}
+
+.portfolioimg, #portfoliovid {
+    border: 3px solid #262d8f;
+    border-radius: 8px;
+}
+
+#portfoliovid {
+    width: 99%;
+    margin-left: 0.5%;
 }
