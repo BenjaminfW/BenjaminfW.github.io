@@ -6,49 +6,63 @@ I mean... yeah, the colors work. But it makes the website look like it's from 20
 */
 
 body {
-    background-color: black;
-    color: #bb865d;
+    background-image: linear-gradient(90deg, black, 5%, #21361d, 15%, #21361d, 85%, #21361d, 95%, black);
+    color: #4393b3;
+    margin: 0;
 }
+
+/*.gradientleft {
+    width: 12.25%;
+    background-color: linear-gradient(to right, black, #21361d);
+}
+.gradientright {
+    width: 12.25%;
+    background-color: linear-gradient(to right, #21361d, black);
+}*/
 
 /*header, .main {
     margin: auto;
 }*/
 
 nav, header, .main {
-    background-color: #3038B0;
+    background-color: #21361d;
     width: 75%;
-    border-left: 4px solid #262d8f;
-    border-right: 4px solid #262d8f;
+    /*border-left: 4px solid #262d8f;
+    border-right: 4px solid #262d8f;*/
     margin: auto;
     /*margin-top: none;
     margin-bottom: none;*/
-    padding: 1%
+    padding: 1%;
 }
 
 nav {
     font-size: 20pt;
-    border: 4px solid #262d8f;
+    /*border: 4px solid #262d8f;*/
     /*text-decoration: none;*/
     /*position:sticky;*/
     padding: 0;
-    width: 75%;
+    /*width: 75%;*/
 }
 .navlist {
     height: 100%;
 }
-.navlistitem {
+.navlistitem, .navlistsel {
     list-style: none;
     /*display: inline;*/
     float: left;
     width: 33.33%;
     /*margin: auto;*/
-    border-right: #262d8f;
+    /*border-right: #262d8f;*/
     padding-top: 1%;
     padding-bottom: 1%;
     text-align: center;
+    transition: background-color 0.5s
 }
 .navlistitem:hover {
-    background-color: #302975;
+    background-color: #182915;
+}
+.navlistsel {
+    background-color: #1d311a;
 }
 
 /*header {
@@ -92,7 +106,7 @@ a:hover {
 
 .submainheader {
     padding-left: 1%;
-    border-bottom: 2px solid #262d8f;
+    border-bottom: 2px solid #43b3aa;
 }
 
 .headertext {
@@ -100,10 +114,10 @@ a:hover {
     margin: auto;
 }
 
-.portfolioimg, #portfoliovid {
+/*.portfolioimg, #portfoliovid {
     border: 3px solid #262d8f;
     border-radius: 8px;
-}
+}*/
 
 #portfoliovid {
     width: 99%;
