@@ -78,22 +78,28 @@ function drawTrack() {
 
 onkeydown = (e) => {
     //console.log(car)
+    let alertelement = document.getElementById("showkey");
     switch(e.code) {
         case "ArrowUp":
             car.acceleration = 0.2;
+            alertelement.innerHTML = "Up";
             break;
         case "ArrowDown":
             car.acceleration = -0.13;
+            alertelement.innerHTML = "Down";
             break;
         case "ArrowLeft":
             car.turn_accel = -0.01;
+            alertelement.innerHTML = "Left";
             break;
         case "ArrowRight":
             car.turn_accel = 0.01;
+            alertelement.innerHTML = "Right"
             break;
         case "Space":
             car.drifting = true;
             car.max_turn_speed = 0.06;
+            alertelement.innerHTML = "Space";
             break;
     }
     /*
@@ -186,7 +192,7 @@ function loop() {
     //draw2d.rotate(car.direction + (Math.PI/2));
     drawTrack();
     drawCar();
-    showSections();
+    //showSections();
     draw2d.restore();
 
 
