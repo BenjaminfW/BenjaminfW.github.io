@@ -65,6 +65,25 @@ nav {
     background-color: #1d311a;
 }
 
+table {
+    /*padding: none;*/
+    width: 100%;
+    border-collapse: collapse;
+}
+/*th {
+    border-bottom: 2px solid #182915;
+}*/
+/*td {
+    border-top: 2px solid #182915;*/
+    /*padding: 1%;*/
+    /*border-left: 2px solid #182915;*/
+    /*margin: none;*/
+/*}*/
+tr:nth-child(2) {
+    background-color: #1d301a;
+}
+
+
 /*header {
     align-content: center;
 }*/
