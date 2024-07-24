@@ -142,3 +142,8 @@ a:hover {
     width: 99%;
     margin-left: 0.5%;
 }
+
+#pagedescription {
+    width: 50%;
+    margin: auto;
+}

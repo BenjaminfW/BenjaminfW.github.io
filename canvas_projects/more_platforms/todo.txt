@@ -1,0 +1,63 @@
+What I was working on:
+game.js
+- adding a death animation that would pan that camera back to the beginning
+  - this was proving to burn me out because I couldn't think of a good way to
+    find the beginning, destination, and place within the animation completely
+    inside a recursive loop
+  - okay, so I got it working, but it keeps going beyond what it should
+    - As far as I can tell, it has to do with the player's position inside the
+      element.  This could end up being very difficult to deal with.
+
+
+
+What I thought of doing next:
+
+working on the camera more
+- You can't really see where you're going, since it doesn't move until you're
+  near the edge of the screen
+
+interactables
+- Just detect whether the player is in a box at a position and if the "interact"
+  key is being pressed.
+- One problem on my mind is executing custom functions or code snippets. I could
+  definitely pre-define some stuff, like save points or opening gates, but I'd
+  rather have something more extensible.
+- Things they could do:
+  set save/respawn point
+  move a platform elsewhere in the level
+  transport the player elsewhere
+
+rocket launcher
+- I think rocket jumping is really fun
+
+generalizing all platforms, walls, ceilings
+- There's little reason for level platforms, walls, and ceilings to be different
+  objects entirely from the angled ones.  They're just special cases where the
+  angle is 0 or PI.
+- It's also possible to make platforms like walls, where they don't allow movement
+  across both ways.
+
+optimizations
+- don't render platforms or stuff outside the canvas element (this may be
+  difficult with diagonal platforms, since they don't have an x or y at
+  which they can be conclusively excluded)
+- don't perform checks on platforms outside the canvas element
+  - maybe check whether a platform is in view, then add it to a list that
+    checks the collisions and such
+
+visual enhancements
+- I could add particles
+- I could add a parallax background (although I'd like to make a bigger level
+  before adding this)
+- I could look into making animated sprites
+
+
+
+
+what I got done:
+adding ceilings
+- It should pretty much work the same as a platform, but is sets player.dy to 0
+  when you hit it from the bottom
+
+reworking the platforms
+- It's kind of cumbersome to define them at their center and try to line them up

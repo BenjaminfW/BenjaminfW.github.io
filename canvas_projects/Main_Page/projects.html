@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript Activities</title>
+    <meta charset="utf-8">
+    <link href="../../site_icon.png" rel="icon" type="image/png">
+    <link href="../../bensite.css" rel="stylsheet" type="text/css">
+
+    <style>
+        .tablelist {
+            float: left;
+        }
+        .itemtitle {
+            text-align: center;
+        }
+    </style>
+
+    <!--script>
+        const elementinfo = [
+        {name: "Spider Solitaire",
+         image: "spider.png",
+         file: "canvasthing2.html"
+        },
+        {name: "Regular (Klondike) Solitaire",
+         image: "solitaire.png",
+         file: "canvasthing3.html"
+        },
+        {name: "Minesweeper",
+         image: "minesweeper1.png",
+         file: "minesweeper.html"
+        },
+        {name: "Minesweeper+",
+         image: "minesweeper2.png",
+         file: "minesweeperplus.html"
+        },
+        {name: "FreeCell Solitaire",
+         image: "freecell.png",
+         file: "canvasthing.html"
+        },
+        {name: "Flap the Bird",
+         image: "flapbird.png",
+         file: "flap_the_bird.html"
+        },
+        {name: "Car Thing",
+         image: "carthing.png",
+         file: "carthing.html"
+        }
+        ];
+
+        const columnwidth = 100;
+
+        function addContent() {
+
+            let numcolumns = Math.floor(document.getElementById("linktable").width / columnwidth);
+
+            console.log(numcolumns);
+
+            for (let i = 0; i < numcolumns; i++) {
+                let list = document.createElement("ul");
+                list.setAttribute("id", ("list"+i));
+                list.setAttribute("class", "tablelist");
+
+                document.getElementById("linktable").appendChild(list);
+            
+            }
+
+            for (let i = 0; i < elementinfo.length; i++) {
+                let listitem = document.createElement("li");
+
+                let itemtitle = document.createElement("p");
+                itemtitle.setAttribute("class", "itemtitle");
+                itemtitle.innerText = elementinfo[i].name;
+
+                let itemimage = document.createElement("img");
+                itemimage.setAttribute("src", elementinfo[i].image);
+
+                listitem.appendChild(itemtitle);
+                listitem.appendChild(itemimage);
+
+                let listid = "list" + ( i % numcolumns );
+                document.getElementById(listid).appendChild(listitem);
+            }
+        }
+    </script-->
+
+</head>
+
+<body>
+
+
+    <header>
+        <h2 class="headertext">JavaScript</h2>
+    </header>
+
+    <div class="main" style="overflow:auto">
+
+        <div id="linktable"></div>
+        
+
+    </div>
+
+
+</body>
+</html>

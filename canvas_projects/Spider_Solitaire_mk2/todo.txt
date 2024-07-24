@@ -1,0 +1,29 @@
+Things 2 add:
+
+
+Win animation
+Soften Card shadows
+Auto-move animation
+
+
+Hard stuff:
+Deal animation
+Small movement animation
+Start animation
+Complex movement animation
+    angle cards according to velocity
+    stagger animation of consecutive cards
+Make cards pretty
+Add UI elements for gameplay
+    show card face blurb on hover, when tightly packed
+    show which card breaks consecutivity
+Recursively find every end-state of the current game
+    determine whether the game is possible
+    determine chance of success/failure
+
+
+Done:
+Animate cards when moving them
+Hint
+Auto-move
+Undo

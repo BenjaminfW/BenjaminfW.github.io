@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Spider Solitaire mk2</title>
+        <style>
+            #canvas {
+                border: 2px solid darkgreen;
+                background-color: green;
+                border-radius: 5px;
+            }
+        </style>
+        <link href="../../bensite.css" rel="stylesheet" type="text/css">
+
+        <script src="cardanimation.js"></script>
+        <script src="board.js"></script>
+        <script src="cards.js"></script>
+        <script src="game.js"></script>
+        
+        
+    </head>
+
+    <body onload="createBoard()">
+
+        <nav>
+            <li><a href="../Main_Page/projects_page.html">Back to Project List</a></li>
+        </nav>
+
+        <div class="main">
+            <div>
+            <button onclick="startGame(1)">One Suit</button>
+            <button onclick="startGame(2)">Two Suits</button>
+            </div>
+            <div>
+                <button onclick="findHint()">Hint</button>
+                <button onclick="undoMove()">Undo</button>
+            </div>
+            <canvas id="canvas" width="800px" height="500px">Canvas?</canvas>
+        </div>
+    </body>
+</html>

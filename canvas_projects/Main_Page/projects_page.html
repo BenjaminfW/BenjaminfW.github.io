@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript Activities</title>
+    <meta charset="utf-8">
+    <link href="../../bensite.css" rel="stylesheet" type="text/css">
+    <link href="../../site_icon.png" rel="icon" type="image/png">
+
+    <script>
+    var elementinfo = [
+        {name: "Spider Solitaire",
+         image: "spider.png",
+         file: "../canvasthing2.html"
+        },
+        {name: "Regular (Klondike) Solitaire",
+         image: "solitaire.png",
+         file: "../canvasthing3.html"
+        },
+        {name: "Minesweeper",
+         image: "minesweeper1.png",
+         file: "../minesweeper.html"
+        },
+        {name: "Minesweeper+",
+         image: "minesweeper2.png",
+         file: "../minesweeper_plus/minesweeperplus.html"
+        },
+        {name: "FreeCell Solitaire",
+         image: "freecell.png",
+         file: "../canvasthing4.html"
+        },
+        {name: "Flap the Bird",
+         image: "flapbird.png",
+         file: "../flap_the_bird.html"
+        },
+        {name: "Car Thing",
+         image: "carthing.png",
+         file: "../carthing/carthing.html"
+        },
+        {name: "Square Guy",
+         image: "squares.png",
+         file: "../SquareGuy/squareguy.html"
+        },
+        {name: "Platforms",
+         image: "platforms.png",
+         file: "../Platforms/platform.html"
+        },
+        {name: "More Platforms",
+         image: "platforms2.png",
+         file: "../more_platforms/platform.html"
+        },
+        {name: "Spider Solitaire Remaster",
+         image: "spider2.png",
+         file: "../Spider_Solitaire_mk2/spider.html"
+        }
+    ];
+
+    function writeContent() {
+        for (let i = 0; i < Math.ceil(elementinfo.length / 5); i++) {
+            let newrow = document.createElement("tr");
+            //newrow.setAttribute("id","row"+i);
+
+            for (let j = 0; j < 5 && 5*i+j < elementinfo.length; j++) {
+                let newtd = document.createElement("td");
+                newtd.setAttribute("width","19%");
+                let tdlink = document.createElement("a");
+                tdlink.setAttribute("href",elementinfo[5*i+j].file);
+                let tdimg = document.createElement("img");
+                tdimg.setAttribute("src",elementinfo[5*i+j].image);
+                tdimg.setAttribute("width","100%");
+                let tdlabel = document.createElement("p");
+                tdlabel.innerText = elementinfo[5*i+j].name;
+
+                tdlink.appendChild(tdimg);
+                tdlink.appendChild(tdlabel);
+                newtd.appendChild(tdlink);
+                newrow.appendChild(newtd);
+            }
+            //console.log("created row");
+
+            let table2append2 = document.getElementById("link_table");
+            table2append2.appendChild(newrow);
+        }
+    }
+    </script>
+</head>
+
+<body onload="writeContent()">
+
+    <nav>
+        <div class="navlist">
+            <a class="navlistitem" href="../../index.html">Home</a>
+            <a class="navlistitem" href="../../resume.html">Resume</a>
+            <a class="navlistitem" href="../../portfolio.html">Portfolio</a>
+            <!--div style="clear:both"></div-->
+        </div>
+    </nav>
+
+    <div class="main" style="margin-top:100px">
+        <h3 class="headertext"><a href="../../portfolio.html">Back to Portfolio</a></h3>
+    </div>
+
+    <header>
+        <h1 class="headertext">JavaScript Canvas Projects</h1>
+    </header>
+
+    <div class="main">
+        <p id="pagedescription">
+            Here are the projects I've created since learning the API last fall.
+            They are listed in the order that I made them. There is some overlap
+            in the development of some, but this is pretty much the order I made
+            them.
+        </p>
+    </div>
+
+    <div class="main">
+        <table id="link_table" class="main">
+        <!--tr>
+            <td><a href="canvasthing2.html"><img src="solitaire1.png"></a></td>
+            <td><a href="canvasthing3.html"><img src="solitaire2.png"></a></td>
+            <td><a href="canvasthing4.html"><img src="solitaire3.png"></a></td>
+            <td><a href="minesweeper.html"><img src="minesweeper1.png"></a></td>
+            <td><a href="minesweeper_plus.html"><img src="minesweeper2.png"></a></td>
+        </tr-->
+        </table>
+    </div>
+
+</body>
+</html>
