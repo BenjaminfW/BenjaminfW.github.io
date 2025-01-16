@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Planets</title>
+        <meta charset="utf-8">
+        <script src="planets.js"></script>
+        <style>
+            canvas {
+                position: absolute;
+            }
+            #canvases {
+                border: 2px solid darkgray;
+                width: 800px;
+                height: 500px;
+            }
+            #canvasBG {
+                z-index: 1;
+                background-color: black;
+            }
+            #paths {
+                z-index: 2;
+            }
+            #canvas {
+                z-index: 3;
+            }
+        </style>
+        <link href="../../bensite.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+
+        <nav>
+            <!--li><a href="../index.html">Home</a></li-->
+            <li><a href="../Main_Page/projects_page.html">Back to Project List</a></li>
+        </nav>
+
+        <div class="main">
+            <div>
+                <button id="startbutton">Start</button>
+                <button id="pathbutton">Toggle Paths</button>
+                <p>New planet mass: <input id="massinput" type="number" value="1" min="0"></p>
+                <button id="setmass">Set Mass</button>
+                
+            </div>
+            <div id="canvases">
+            <canvas width="800" height="500" id="canvasBG">Canvas?</canvas>
+            <canvas width="800" height="500" id="paths">Canvas?</canvas>
+            <canvas width="800" height="500" id="canvas">Canvas?</canvas>
+            </div>
+
+            <p>
+                This is just a quick thing I made because I felt I needed something
+                new to put on here. I basically just implemented a couple kinmatics
+                equations I learned in Physics classes long ago. It calculates gravitational
+                force by each planet on each planet, and when there's a collision,
+                it calculates the momemtum transfer into the new combined mass.
+            </p>
+
+        </div>
+
+        <script>
+            document.getElementById("startbutton").addEventListener("mousedown", () => {start(3)});
+            document.getElementById("pathbutton").addEventListener("mousedown", togglePaths);
+            document.getElementById("massinput").addEventListener("mouseup", setMass);
+            document.getElementById("setmass").addEventListener("mousedown", setMass);
+            document.getElementById("canvas").addEventListener("mousemove", (e) => {changeVel(e)});
+            document.getElementById("canvas").addEventListener("mousedown", (e) => {startNewPlanet(e)});
+            document.getElementById("canvas").addEventListener("mouseup", (e) => {addPlanet(e)});
+            document.getElementById("canvas").addEventListener("keydown", (e) => {
+                if (e.code === "Space") {console.log(Simulation.planetList[0])};
+            })
+        </script>
+    </body>
+</html>
