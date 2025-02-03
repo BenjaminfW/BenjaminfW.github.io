@@ -70,17 +70,24 @@ table {
     width: 100%;
     border-collapse: collapse;
 }
-/*th {
+th {
     border-bottom: 2px solid #182915;
-}*/
-/*td {
-    border-top: 2px solid #182915;*/
-    /*padding: 1%;*/
+}
+td {
+    /*border-top: 2px solid #182915;*/
+    padding: 1%;
     /*border-left: 2px solid #182915;*/
     /*margin: none;*/
-/*}*/
-tr:nth-child(2) {
+}
+td:nth-child(1) {
+    border-right: 2px solid #182915;
+}
+tr:nth-child(2n) {
     background-color: #1d301a;
+}
+td:nth-child(n+2):nth-last-child(n+2) {
+    border-left: 2px solid #182915;
+    border-right: 2px solid #182915;
 }
 
 
