@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>3D Iteration 1</title>
+    <meta charset="utf-8">
+    <script src="3DStuff.js"></script>
+
+    <style>
+    canvas {
+        /*border: 2px solid black;*/
+        position: absolute;
+    }
+    #canvases {
+        width: 800px;
+        height: 500px;
+        border: 2px solid black;
+        position: relative;
+    }
+    #background {
+        z-index: 1;
+    }
+    #main {
+        z-index: 2;
+    }
+    </style>
+    <link href="../../bensite.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav>
+        <ul>
+            <li><a href="../Main_Page/projects_page.html">Back to Project List</a></li>
+            <li><a href="3D_main.html">Back to 3D Main Page</a></li>
+            <li>Iteration 1</li>
+            <li><a href="3D_2.html">Iteration 2</a></li>
+            <li><a href="3D_3.html">Iteration 3</a></li>
+        </ul>
+    </nav>
+
+    <div class="main">
+
+    <div>
+        <h3>Controls</h3>
+        <p>Use the left and right arrow keys to look around.</p>
+        <p>This will not work on mobile unless you know of
+            some way to recreate the arrow keys on your
+            phone.
+        </p>
+        <h3>Tip</h3>
+        <p>Press "Start" twice for the background. I don't know
+            why you have to do this, but for some reason, it
+            doesn't render on the first pass.
+        </p>
+    </div>
+
+    <div>
+    <button onclick="start()">Start</button>
+    </div>
+
+    <div id="canvases">
+        <canvas id="background" width="800" height="500">Canvas?</canvas>
+        <canvas id="main" width="800" height="500">Canvas?</canvas>
+    </div>
+
+    <div>
+        <h3>Explanation</h3>
+        <p>If you've ever played with a graphing calculator, you'll know
+            that the functions f(x)=|x| and f(x)=-|x| make a
+            hallway-looking thing (put in f(x)=xsin(x) for some funky
+            wallpaper). It's a simple one-point perspective centered at
+            the origin. So all I had to do was create a single point
+            that I then used to draw a couple polygons from the edges
+            of the screen.  To make it repeat and move in a circular
+            fashion, I took the tangent of the vanishing point's x
+            position.
+        </p>
+        <p>Beyond that, the only other trick was to add in a gradient
+            background to really sell the idea of perspective. It
+            makes it look like the hallway darkens the further down
+            you look.
+        </p>
+    </div>
+
+    </div>
+    
+</body>
+</html>

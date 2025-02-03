@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>3D Iteration 2</title>
+    <meta charset="utf-8">
+    <script src="3DStuff2.js"></script>
+
+    <style>
+    canvas {
+        /*border: 2px solid black;*/
+        position: absolute;
+    }
+    #canvases {
+        width: 800px;
+        height: 500px;
+        border: 2px solid black;
+        position: relative;
+    }
+    #background {
+        z-index: 1;
+    }
+    #main {
+        z-index: 2;
+    }
+    </style>
+    <link href="../../bensite.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <nav>
+        <ul>
+            <li><a href="../Main_Page/projects_page.html">Back to Project List</a></li>
+            <li><a href="3D_main.html">Back to 3D Main Page</a></li>
+            <li><a href="3D_1.html">Iteration 1</a></li>
+            <li>Iteration 2</li>
+            <li><a href="3D_3.html">Iteration 3</a></li>
+        </ul>
+    </nav>
+
+    <div class="main">
+
+    <div>
+        <h3>Controls</h3>
+        <p>Use the left and right arrow keys to rotate your view.</p>
+        <p>Use the up and down arrow keys to move forward and backward.</p>
+        <p>This will not work on mobile unless you know of some way to
+            recreate the arrow keys on your phone.
+        </p>
+    </div>
+
+    <div>
+    <button onclick="start()">Start</button>
+    </div>
+
+    <div id="canvases">
+        <canvas id="background" width="800" height="500">Canvas?</canvas>
+        <canvas id="main" width="800" height="500">Canvas?</canvas>
+    </div>
+
+    <div>
+        <h3>Explanation</h3>
+        <p>Once I created two infintely extending walls, the next step
+            was to create one infinitely extending wall that grew and
+            shrank as you approached and withdrew from it. Rather than
+            using the full height of the screen's edge, I just
+            multiplied the screen's height by a function that converges
+            to 0. I used 1/x, where x is the distance to the wall.
+        </p>
+        <p>This approach has some drawbacks, though. Since the wall is
+            drawn from the edge of the screen, it can't be drawn if
+            the wall's position is inside the screen. The vanishing
+            point automatically loops back around and makes a triange
+            on the opposite side of the view than desired.
+        </p>
+        <p>I needed to make a pillar at the end of the wall so I could
+            use it instead of the edge of the screen. The issue of
+            height was already solved. I could reuse the function for
+            the wall height.
+        </p>
+        <p>Since everything was based on angles, I didn't need to do
+            any matrix or vector math to get the relative position of
+            the pillar. All I needed to do was find the angle of the
+            pillar relative to the view position and reuse the simple
+            vanishing point code from earlier.
+        </p>
+        <p>Once I had the pillar, I realized I didn't need it to draw
+            an infinite wall. If I could join two pillars, I would
+            have a quadrilateral that I could draw, instead of a
+            triangle.
+        </p>
+    </div>
+
+    </div>
+    
+</body>
+</html>
